@@ -1,0 +1,30 @@
+.cars-container {
+  position: relative;
+  height: 100%;
+  background-color: #fff598;
+}
+
+.cars-table-container {
+  height: 80%;
+  overflow: auto;
+}
+
+.cars-table {
+  width: 80%;
+  max-width: 800px;
+}
+
+.cars-container .advance {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+}
+
+
+@media only screen and (min-width: 960px) {
+  .cars-container {
+    background-image: url('../car-background.png');
+    background-position: center;
+    background-size: cover;
+  }
+}

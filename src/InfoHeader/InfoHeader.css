@@ -1,0 +1,7 @@
+.info-header {
+  height: fit-content;
+  box-shadow: 1px 1px 1px #000000;
+  background-color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+}

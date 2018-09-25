@@ -1,0 +1,66 @@
+.pickup-container {
+  height: 100%;
+  background-color: #f9b1b1;
+  overflow: auto;
+}
+
+.pickup-input-container {
+  height: fit-content;
+  margin-top: 10vh;
+  box-shadow: 1px 1px 1px black;
+  background-color: #ffa500;
+}
+
+.input-container {
+  width: 100%;
+  padding: 10px;
+  font-size: 19px;
+}
+
+input {
+  width: 100%;
+  padding: 11px 11px 9px;
+  border: 0px;
+  border-top: 0px !important;
+  border-bottom: 2px solid transparent;
+  border-left: 0px !important;
+  border-right: 0px !important;
+  border-radius: 0px;
+  background-color: #ffa500 !important;
+  color: #000000 !important;
+  font-size: 19px;
+  font-weight: 200;
+  line-height: 24px;
+}
+
+input::placeholder, input:disabled {
+  color: #484848 !important;
+}
+
+input:disabled {
+  font-style: italic;
+}
+
+input:focus {
+  outline: none;
+}
+
+
+@media only screen and (min-width: 640px) {
+  .pickup-input-container {
+    margin-top: 25vh;
+  }
+
+  .input-container {
+    width: unset;
+  }
+}
+
+
+@media only screen and (min-width: 960px) {
+  .pickup-container {
+    background-image: url('../pickup-background.png');
+    background-position: center;
+    background-size: cover;
+  }
+}

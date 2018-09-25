@@ -1,0 +1,19 @@
+.content-container {
+  height: 80vh;
+  margin-top: 80px;
+}
+
+
+@media only screen and (min-height: 400px) {
+  .content-container {
+    height: 85vh;
+    margin-top: 120px;
+  }
+}
+
+
+@media only screen and (min-height: 800px) {
+  .content-container {
+    height: 90vh;
+  }
+}

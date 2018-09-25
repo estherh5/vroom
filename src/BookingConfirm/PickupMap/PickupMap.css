@@ -1,0 +1,6 @@
+iframe {
+  height: 300px;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 1px 1px 1px #000000;
+}

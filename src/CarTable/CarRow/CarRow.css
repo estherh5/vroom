@@ -1,0 +1,39 @@
+.car-row {
+  box-shadow: 1px 1px 1px #000000;
+  background-color: #ffffff;
+  font-family: 'Source Sans Pro', sans-serif;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.car-row:hover, .car-row.selected {
+  opacity: 1;
+}
+
+.car-name {
+  font-family: 'Racing Sans One', cursive;
+  font-size: 20px;
+}
+
+.price-total-row {
+  font-size: 24px;
+  font-family: 'Racing Sans One', cursive;
+  color: #ffa500;
+}
+
+.price-day-row {
+  font-size: 13px;
+  font-style: italic;
+}
+
+.address-row {
+  font-size: 12px;
+}
+
+.car-logo {
+  width: 140px;
+}
+
+.company-logo {
+  width: 50px;
+}

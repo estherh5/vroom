@@ -1,0 +1,13 @@
+.advance {
+  padding: 10px;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.advance:disabled {
+  color: #484848;
+  cursor: not-allowed;
+}
