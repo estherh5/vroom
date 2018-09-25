@@ -1,0 +1,21 @@
+.confirm {
+  border: 5px solid #66ff6d;
+  border-radius: 25px;
+  box-shadow: 1px 1px 1px #2c712f;
+  background-color: #d7ffd9;
+  color: #66ff6d;
+  font-size: 25px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.confirm:focus, .confirm:hover, .confirm:active, .confirm:disabled {
+  border-color: #50ff58;
+  box-shadow: none;
+  background-color: #b9ffbc;
+  color: #50ff58;
+}
+
+.confirm:disabled {
+  cursor: not-allowed;
+}

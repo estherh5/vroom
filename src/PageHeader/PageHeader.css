@@ -1,0 +1,36 @@
+.header {
+  height: 80px;
+}
+
+.nav {
+  position: relative;
+  height: 100%;
+  box-shadow: 1px 1px 1px #dedede;
+}
+
+.liner {
+  position: absolute;
+  height: 2px;
+  width: 65%;
+  top: 50%;
+  left: 0px;
+  right: 0px;
+  margin: 0px auto;
+  background-color: #cacaca;
+  z-index: 1;
+}
+
+
+@media only screen and (min-height: 400px) {
+  .header {
+    height: 120px;
+  }
+}
+
+
+@media only screen and (min-width: 960px) {
+  .nav {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}

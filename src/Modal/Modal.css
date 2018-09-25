@@ -1,0 +1,69 @@
+.modal-container {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  background-color: #80808096;
+  z-index: 2000;
+}
+
+.modal {
+  position: absolute;
+  height: 500px;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 3px;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0px 0px 3px #a2a2a2;
+  background-color: #ffffff;
+  text-align: left;
+}
+
+.hidden {
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  padding: 0px;
+  border: none;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.close-button:active {
+  outline: none;
+  text-shadow: 0.3px 0.3px 0px #000000;
+}
+
+.modal-body {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.success {
+  color: #0adc00;
+  text-align: center;
+}
+
+.fail {
+  color: #ff0000;
+  text-align: center;
+}
+
+.modal-icon {
+  font-size: 300px;
+}
+
+.modal-message {
+  margin-top: 50px;
+  font-size: 24px;
+}

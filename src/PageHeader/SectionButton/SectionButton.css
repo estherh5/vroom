@@ -1,0 +1,95 @@
+button:focus {
+  outline: none;
+}
+
+.round {
+  height: 50px;
+  width: 50px;
+  left: 0px;
+  border-radius: 100px;
+  display: inline-block;
+  font-size: 21px;
+  line-height: 50px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.section-button {
+  padding: 25px;
+}
+
+.section-button:after {
+  position: absolute;
+  content: ' ';
+  left: 47%;
+  margin: 0px auto;
+  bottom: 0px;
+  border: 5px solid transparent;
+  border-bottom-color: #cacaca;
+  opacity: 0;
+  transition: 0.1s ease-in-out;
+}
+
+.section-button.active:after {
+  position: absolute;
+  content: ' ';
+  left: 42%;
+  bottom: 0px;
+  margin: 0px auto;
+  border: 10px solid transparent;
+  border-bottom-color: #cacaca;
+  opacity: 1;
+}
+
+
+@media only screen and (min-width: 400px) {
+  .section-button.active:after {
+    left: 43%;
+  }
+}
+
+
+@media only screen and (min-width: 510px) {
+  .section-button.active:after {
+    left: 44%;
+  }
+}
+
+
+@media only screen and (min-width: 620px) {
+  .section-button.active:after {
+    left: 45%;
+  }
+}
+
+
+@media only screen and (min-width: 700px) {
+  .section-button.active:after {
+    left: 46%;
+  }
+}
+
+
+@media only screen and (min-width: 920px) {
+  .section-button.active:after {
+    left: 47%;
+  }
+}
+
+
+@media only screen and (min-width: 1200px) {
+  .section-button.active:after {
+    left: 47.5%;
+  }
+}
+
+
+@media only screen and (min-height: 400px) {
+  .round {
+    height: 70px;
+    width: 70px;
+    font-size: 32px;
+    line-height: 70px;
+  }
+}

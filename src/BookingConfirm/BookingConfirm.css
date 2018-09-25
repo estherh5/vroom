@@ -1,0 +1,29 @@
+.confirm-container {
+  position: relative;
+  height: 100%;
+  background-color: #b2ffb6;
+  overflow: auto;
+}
+
+.confirm-review-container {
+  position: absolute;
+  height: fit-content;
+  width: 80%;
+  max-width: 800px;
+  top: 0px;
+  background-color: #ffffff8f;
+}
+
+.confirm-container .car-row {
+  cursor: default;
+  opacity: 1;
+}
+
+
+@media only screen and (min-width: 960px) {
+  .confirm-container {
+    background-image: url('../confirm-background.png');
+    background-position: center;
+    background-size: cover;
+  }
+}
