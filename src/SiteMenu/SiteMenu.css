@@ -1,0 +1,161 @@
+.site-menu-container {
+  position: fixed;
+  height: 43px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  font-family: 'Rajdhani', sans-serif;
+  z-index: 10000;
+}
+
+.site-menu-inner-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.site-menu-icon-container {
+  width: 50px;
+  margin-top: 7px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
+  align-self: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.site-menu-icon {
+  height: 30px;
+  left: 0px;
+  opacity: 0.7;
+  filter: grayscale(1);
+  z-index: 10;
+}
+
+.site-menu-icon-container:hover .site-menu-icon {
+  opacity: 1;
+  filter: grayscale(0);
+}
+
+.site-menu {
+  position: fixed;
+  width: 130px;
+  padding-bottom: 6px;
+  padding-left: 6px;
+  box-shadow: 1px 1px 1px #989898;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: #ffffff;
+  text-align: left;
+  opacity: 0;
+  transition: all 0.5s;
+  z-index: 3;
+}
+
+.site-menu.closed {
+  opacity: 0 !important;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+.site-menu.opened {
+  opacity: 1 !important;
+  transition: all 0.5s;
+}
+
+.site-menu-spacer-row {
+  height: 44px;
+}
+
+.site-menu-row {
+  height: 20px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.site-menu-row:hover {
+  opacity: 1;
+}
+
+.site-menu-row td {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 1px;
+  padding-right: 1px;
+  line-height: 1;
+}
+
+.site-menu-image-cell {
+  width: 18px;
+}
+
+.site-menu-image {
+  height: 12px;
+  filter: grayscale(1);
+}
+
+.site-menu-row:hover .site-menu-image {
+  filter: grayscale(0);
+}
+
+.site-menu-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  color: #000000 !important;
+}
+
+@media only screen and (min-width: 768px) {
+  .site-menu {
+    width: 150px;
+  }
+
+  .site-menu-text {
+    font-size: 14px;
+  }
+
+  .site-menu-row {
+    height: 23px;
+  }
+
+  .site-menu-image-cell {
+    width: 22px;
+  }
+
+  .site-menu-image {
+    height: 15px;
+  }
+}
