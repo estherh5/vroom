@@ -6,6 +6,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import Modal from './Modal/Modal.js';
 import PageHeader from './PageHeader/PageHeader.js';
+import SiteMenu from './SiteMenu/SiteMenu.js';
 import PickupSelector from './PickupSelector/PickupSelector.js';
 import CarTable from './CarTable/CarTable.js';
 import BookingConfirm from './BookingConfirm/BookingConfirm.js';
@@ -414,6 +415,8 @@ class App extends Component {
         <PageHeader
           buttons={this.state.buttons}
           onSelectButton={this.setSelectedButton} />
+
+        <SiteMenu />
 
         <div className={'row align-items-start justify-content-center ' +
           'content-container'}>
