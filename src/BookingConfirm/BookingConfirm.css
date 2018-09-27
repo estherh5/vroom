@@ -2,6 +2,9 @@
   position: relative;
   height: 100%;
   background-color: #b2ffb6;
+  background-image: url('../confirm-background.png');
+  background-position: center;
+  background-size: cover;
   overflow: auto;
 }
 
@@ -17,13 +20,4 @@
 .confirm-container .car-row {
   cursor: default;
   opacity: 1;
-}
-
-
-@media only screen and (min-width: 960px) {
-  .confirm-container {
-    background-image: url('../confirm-background.png');
-    background-position: center;
-    background-size: cover;
-  }
 }

@@ -1,6 +1,9 @@
 .pickup-container {
   height: 100%;
   background-color: #f9b1b1;
+  background-image: url('../pickup-background.png');
+  background-position: center;
+  background-size: cover;
   overflow: auto;
 }
 
@@ -53,14 +56,5 @@ input:focus {
 
   .input-container {
     width: unset;
-  }
-}
-
-
-@media only screen and (min-width: 960px) {
-  .pickup-container {
-    background-image: url('../pickup-background.png');
-    background-position: center;
-    background-size: cover;
   }
 }
