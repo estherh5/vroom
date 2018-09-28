@@ -15,6 +15,7 @@ class CarTable extends Component {
       allowAdvance: false
     }
 
+    this.setSort = this.setSort.bind(this);
     this.selectCar = this.selectCar.bind(this);
     this.advanceSection = this.advanceSection.bind(this);
   }
@@ -27,6 +28,12 @@ class CarTable extends Component {
     } else {
       return this.setState({allowAdvance: false});
     }
+  }
+
+  setSort(e) {
+    const sortOption = e.target.options[e.target.selectedIndex].text;
+
+    return this.props.setSort(sortOption);
   }
 
   // Set selected car when user clicks on it
@@ -60,7 +67,8 @@ class CarTable extends Component {
 
     return (
       <div
-        className="row no-gutters w-100 justify-content-center cars-container">
+        className={'row no-gutters w-100 flex-column justify-content-center ' +
+          'align-items-center cars-container'}>
 
           <InfoHeader
             location={this.props.location.label}
@@ -68,8 +76,23 @@ class CarTable extends Component {
             endDate={this.props.endDate}
             />
 
-          <div className={'row no-gutters w-100 justify-content-center ' +
+          <div className={'row no-gutters w-100 justify-content-end ' +
             'cars-table-container'}>
+
+              <div className="sort-menu mt-4">
+                <span className="sort-title">
+                  Sort by...
+                </span>
+
+                <select
+                  title="Sort car rental results"
+                  onChange={this.setSort}>
+                    <option>price</option>
+                    <option>distance</option>
+                    <option>type</option>
+                </select>
+
+              </div>
 
               <table className="cars-table">
                 <tbody>

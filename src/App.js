@@ -107,6 +107,7 @@ class App extends Component {
     this.setLocation = this.setLocation.bind(this);
     this.setDates = this.setDates.bind(this);
     this.getCars = this.getCars.bind(this);
+    this.setSort = this.setSort.bind(this);
     this.selectCar = this.selectCar.bind(this);
     this.advanceSection = this.advanceSection.bind(this);
     this.confirmBooking = this.confirmBooking.bind(this);
@@ -258,6 +259,8 @@ class App extends Component {
                 }
               });
 
+              cars.sort((a, b) => a.price - b.price);
+
               document.body.style.cursor = 'default';
 
               this.setState({cars: cars});
@@ -281,6 +284,34 @@ class App extends Component {
           });
         }
       })
+  }
+
+  setSort(sortOption) {
+    let updatedCars = cloneDeep(this.state.cars);
+
+    function cmp(x, y){
+      return x > y ? 1 : x < y ? -1 : 0;
+    };
+
+    if (sortOption === 'price') {
+      updatedCars.sort((a, b) => a.price - b.price);
+    }
+
+    else if (sortOption === 'distance') {
+      updatedCars.sort((a, b) =>
+        cmp(
+          [cmp(a.distance, b.distance), cmp(a.price, b.price)],
+          [cmp(b.distance, a.distance), cmp(b.price, a.price)]
+        )
+      );
+    }
+
+    else if (sortOption === 'type') {
+      updatedCars.sort((a, b) => (a.category > b.category) ? 1 :
+        ((b.category > a.category) ? -1 : 0));
+    }
+
+    return this.setState({cars: updatedCars});
   }
 
   // Set clicked car rental as selected
@@ -437,6 +468,7 @@ class App extends Component {
                 startDate={this.state.startDate}
                 endDate={this.state.endDate}
                 cars={this.state.cars}
+                setSort={this.setSort}
                 selectCar={this.selectCar}
                 advanceSection={this.advanceSection}
                 />
