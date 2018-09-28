@@ -67,8 +67,12 @@ class PickupSelector extends Component {
 
   render() {
     return (
-      <div className={'row no-gutters w-100 justify-content-center ' +
-        'pickup-container'}>
+      <div className={'row flex-column no-gutters w-100 ' +
+        'justify-content-start align-items-center pickup-container'}>
+
+          <div className="intro p-4 mx-5">
+            Welcome to <a href=".">Vroom</a>, a speedy rental car booking app
+          </div>
 
           <div className={'d-flex flex-wrap justify-content-center mx-5 ' +
             'pickup-input-container'}>

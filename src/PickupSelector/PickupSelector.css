@@ -7,9 +7,29 @@
   overflow: auto;
 }
 
+.intro {
+  margin-top: 10vh;
+  margin-bottom: 60px;
+  box-shadow: 1px 1px 1px #000000;
+  background-color: #ffffffb8;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 22px;
+  text-align: center;
+}
+
+.intro a {
+  font-family: 'Racing Sans One', cursive;
+  font-size: 30px;
+  color: #ffa200;
+  text-decoration: none;
+}
+
+.intro a:hover {
+  color: #000000;
+}
+
 .pickup-input-container {
   height: fit-content;
-  margin-top: 10vh;
   box-shadow: 1px 1px 1px black;
   background-color: #ffa500;
 }
@@ -50,8 +70,9 @@ input:focus {
 
 
 @media only screen and (min-width: 640px) {
-  .pickup-input-container {
-    margin-top: 25vh;
+  .intro {
+    margin-top: 15vh;
+    margin-bottom: 70px;
   }
 
   .input-container {
