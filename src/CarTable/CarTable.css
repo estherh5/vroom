@@ -9,12 +9,36 @@
 
 .cars-table-container {
   height: 80%;
+  width: 80%;
+  max-width: 800px;
   overflow: auto;
 }
 
 .cars-table {
-  width: 80%;
-  max-width: 800px;
+  width: 100%;
+}
+
+.sort-menu {
+  padding: 5px;
+  padding-left: 7px;
+  margin-right: 36px;
+  margin-bottom: -10px;
+  box-shadow: 1px 1px 1px #000000;
+  background-color: #ffffff;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.sort-menu span {
+  font-weight: bold;
+}
+
+.sort-menu select {
+  width: 72px;
+  border: none;
+  outline: none;
+  background: none;
+  text-indent: 2px;
+  cursor: pointer;
 }
 
 .cars-container .advance {
