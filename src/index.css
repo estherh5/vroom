@@ -1,7 +1,41 @@
 body {
+  height: 100vh;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   font-family: 'Racing Sans One', cursive;
   overflow: hidden;
+}
+
+#root {
+  flex: 1;
+}
+
+a {
+  color: #ffa200;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #000000;
+  text-decoration: none;
+}
+
+#footer {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.3;
+  z-index: 100;
 }
