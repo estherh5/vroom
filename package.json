@@ -5,7 +5,7 @@
   "dependencies": {
     "ajv": "^6.12.3",
     "lodash": "^4.17.21",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "react": "^16.5.2",
     "react-dates": "^18.1.0",
     "react-dependent-script": "^1.1.0",
