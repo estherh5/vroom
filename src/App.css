@@ -4,12 +4,4 @@
 
 .content-container {
   height: 100%;
-  margin-top: 80px;
-}
-
-
-@media only screen and (min-height: 400px) {
-  .content-container {
-    margin-top: 120px;
-  }
 }

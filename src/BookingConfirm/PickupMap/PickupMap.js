@@ -7,8 +7,7 @@ company component */
 class PickupMap extends Component {
   render() {
     // Set rental company location in <Address City State> format
-    let destination = this.props.to.line1 + ' ' + this.props.to.city + ' ' +
-      (this.props.to.region ? this.props.to.region : this.props.state);
+    let destination = this.props.to.address;
 
     // Replace spaces with '+' symbol for Google Maps URL
     destination = destination.split(' ').join('+');

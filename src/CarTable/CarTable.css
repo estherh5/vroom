@@ -1,6 +1,7 @@
 .cars-container {
-  position: relative;
+  position: absolute;
   height: 100%;
+  padding-top: 80px;
   background-color: #fff598;
   background-image: url('../car-background.png');
   background-position: center;
@@ -19,6 +20,7 @@
 }
 
 .sort-menu {
+  position: fixed;
   padding: 5px;
   padding-left: 7px;
   margin-right: 36px;
@@ -34,8 +36,9 @@
 
 .sort-menu select {
   width: 72px;
-  border: none;
+  margin-left: 3px;
   outline: none;
+  border: none;
   background: none;
   text-indent: 2px;
   cursor: pointer;
@@ -45,4 +48,11 @@
   position: absolute;
   top: 50%;
   right: 5%;
+}
+
+
+@media only screen and (min-height: 400px) {
+  .cars-container {
+    padding-top: 120px;
+  }
 }

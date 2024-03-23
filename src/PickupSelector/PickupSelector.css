@@ -1,5 +1,7 @@
 .pickup-container {
+  position: absolute;
   height: 100%;
+  padding-top: 80px;
   background-color: #f9b1b1;
   background-image: url('../pickup-background.png');
   background-position: center;
@@ -64,6 +66,13 @@ input:disabled {
 
 input:focus {
   outline: none;
+}
+
+
+@media only screen and (min-height: 400px) {
+  .pickup-container {
+    padding-top: 120px;
+  }
 }
 
 

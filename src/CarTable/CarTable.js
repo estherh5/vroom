@@ -67,8 +67,7 @@ class CarTable extends Component {
 
     return (
       <div
-        className={'row no-gutters w-100 flex-column justify-content-center ' +
-          'align-items-center cars-container'}>
+        className={'row no-gutters w-100 justify-content-center align-items-center cars-container'}>
 
           <InfoHeader
             location={this.props.location.label}
@@ -79,7 +78,7 @@ class CarTable extends Component {
           <div className={'row no-gutters w-100 justify-content-end ' +
             'cars-table-container'}>
 
-              <div className="sort-menu mt-4">
+              <div className="sort-menu">
                 <span className="sort-title">
                   Sort by...
                 </span>
@@ -104,12 +103,11 @@ class CarTable extends Component {
                       selected={car.selected}
                       days={days}
                       state={locationState}
-                      acriss={car.acriss}
-                      company={car.company.toLowerCase()}
-                      coords={car.coords}
+                      group={car.group}
+                      company={car.company}
+                      companyLogo={car.companyLogo}
                       address={car.address}
-                      airport={car.airport ? car.airport : null}
-                      category={car.category}
+                      image={car.image}
                       type={car.type}
                       price={car.price}
                       selectCar={this.selectCar}
