@@ -61,7 +61,7 @@ class CarRow extends Component {
 
   // Add backup image based on ACRISS code if car image is not found
   updateCarImage(e) {
-    return e.target.src = this.carImages[this.props.acriss.charAt(0)];
+    return e.target.src = this.carImages[this.props.group.charAt(0)];
   }
 
   // Add backup logo if company logo is not found
@@ -70,14 +70,6 @@ class CarRow extends Component {
   }
 
   render() {
-    // Set company logo image source based on company name
-    const logoSrc = 'https://logo.clearbit.com/' +
-      (['payless', 'national'].includes(this.props.company) ?
-      this.props.company + 'car.com' :
-      this.props.company === 'thrifty' ? this.props.company + '.com.au' :
-      this.props.company === 'firefly' ? this.props.company + 'carrental.com' :
-      this.props.company.replace(/\s/g, '') + '.com');
-
     return (
       <tr
         className={'row car-row m-5 justify-content-center ' +
@@ -90,9 +82,7 @@ class CarRow extends Component {
             'info-cell'}>
 
               <div className="car-name">
-                {this.props.category + ' ' + this.props.type ===
-                  'Special Special' ? 'Special' :
-                  this.props.category + ' ' + this.props.type}
+                {this.props.type}
               </div>
 
               <div className={'price-total-row ' +
@@ -109,23 +99,21 @@ class CarRow extends Component {
 
               <div className="address-row d-flex align-items-center">
 
-                {this.props.airport ? (
+                {this.props.address.name.toLowerCase().includes('airport') ? (
                   <i
                     className="fas fa-plane-departure mr-3 location-icon"
-                    title={this.props.airport + ' Airport'}>
+                    title={this.props.address.name}>
                   </i>
                 ) :
                   <i className="fas fa-location-arrow mr-3 location-icon"></i>
                 }
 
                 <div className="address">
-                  {this.props.address.line1}
+                  {this.props.address.name}
 
                   <br />
 
-                  {this.props.address.city + ', ' +
-                    (this.props.address.region ? this.props.address.region :
-                    this.props.state)}
+                  {this.props.address.address}
                 </div>
 
               </div>
@@ -138,16 +126,14 @@ class CarRow extends Component {
               <img
                 className="mb-3 car-image"
                 onError={this.updateCarImage}
-                src={'https://www.priceline.com/rc-static/vehicles/' +
-                  'domestic_196x116/' + this.props.acriss + '.png'}
-                alt={this.props.category + ' ' + this.props.type} />
+                src={this.props.image}
+                alt={this.props.type} />
 
               <img
                 className="company-logo"
                 onError={this.updateLogoImage}
-                src={logoSrc}
-                alt={this.props.company.charAt(0) +
-                  this.props.company.slice(1).toLowerCase()} />
+                src={this.props.companyLogo}
+                alt={this.props.company} />
 
           </td>
 

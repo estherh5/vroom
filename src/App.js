@@ -55,54 +55,6 @@ class App extends Component {
       bookingSubmitted: false  // Whether or not booking was submitted
     };
 
-    // List of car categories based on ACRISS code
-    this.categories = {
-      M: 'Mini',
-      N: 'Mini Elite',
-      E: 'Economy',
-      H: 'Economy Elite',
-      C: 'Compact',
-      D: 'Compact Elite',
-      I: 'Intermediate',
-      J: 'Intermediate Elite',
-      S: 'Standard',
-      R: 'Standard Elite',
-      F: 'Fullsize',
-      G: 'Fullsize Elite',
-      P: 'Premium',
-      U: 'Premium Elite',
-      L: 'Luxury',
-      W: 'Luxury Elite',
-      O: 'Oversize',
-      X: 'Special'
-    }
-
-    // List of car types based on ACRISS code
-    this.types = {
-      B: '2-3 Door',
-      C: '2/4 Door',
-      D: '4-5 Door',
-      W: 'Wagon/Estate',
-      V: 'Passenger Van',
-      L: 'Limousine',
-      S: 'Sport',
-      T: 'Convertible',
-      F: 'SUV',
-      J: 'Open Air All Terrain',
-      X: 'Special',
-      P: 'Pickup Regular Car',
-      Q: 'Pickup Extended Car',
-      Z: 'Special Offer Car',
-      E: 'Coupe',
-      M: 'Monospace',
-      R: 'Recreational Vehicle',
-      H: 'Motor Home',
-      Y: '2 Wheel Vehicle',
-      N: 'Roadster',
-      G: 'Crossover',
-      K: 'Commercial Van/Truck'
-    }
-
     this.setSelectedButton = this.setSelectedButton.bind(this);
     this.setLocation = this.setLocation.bind(this);
     this.setDates = this.setDates.bind(this);
@@ -154,7 +106,7 @@ class App extends Component {
     return this.setState({startDate: startDate, endDate: endDate});
   }
 
-  // Get rental cars from Amadeus API
+  // Get rental cars from RapidAPI API
   getCars(updatedButtons) {
     // Set pickup submitted state to true to disable pickup section inputs
     this.setState({pickupSubmitted: true});
@@ -163,14 +115,27 @@ class App extends Component {
     const latitude = this.state.location.location.lat;
     const longitude = this.state.location.location.lng;
 
-    // Get pickup and drop-off dates in Amadeus-required format
+    // Get pickup and drop-off dates in RapidAPI-required format
     const pickupDate = this.state.startDate.format('YYYY-MM-DD');
     const dropOffDate = this.state.endDate.format('YYYY-MM-DD');
+    const pickupTime = '10:00';
+    const dropOffTime = '10:00';
 
-    return fetch('https://api.sandbox.amadeus.com/v1.2/cars/search-circle' +
-      '?apikey=' + process.env.REACT_APP_AMADEUS_KEY + '&latitude=' +
-      latitude + '&longitude=' + longitude + '&radius=42&pick_up=' +
-      pickupDate + '&drop_off=' + dropOffDate)
+    // Set fetch options
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': process.env.REACT_APP_RAPIDAPI_KEY,
+        'X-RapidAPI-Host': 'booking-com15.p.rapidapi.com'
+      }
+    };
+
+    return fetch(`https://booking-com15.p.rapidapi.com/api/v1/cars/` +
+      `searchCarRentals?pick_up_latitude=${latitude}&pick_up_longitude=${longitude}` +
+      `&drop_off_latitude=${latitude}&drop_off_longitude=${longitude}&pick_up_date=` +
+      `${pickupDate}&drop_off_date=${dropOffDate}&pick_up_time=${pickupTime}` +
+      `&drop_off_time=${dropOffTime}&currency_code=USD`, fetchOptions
+    )
 
       // Reset cursor style and display error modal if API returns error
       .catch(error => {
@@ -191,7 +156,7 @@ class App extends Component {
         if (response && response.ok) {
           response.json().then(rentals => {
             // If there are no rental cars returned, display error modal
-            if (rentals.results.length === 0) {
+            if (rentals.data.search_results.length === 0) {
               document.body.style.cursor = 'default';
 
               this.setState({
@@ -208,53 +173,28 @@ class App extends Component {
 
               /* Store rental car information for returned results up to 20
               cars */
-              rentals.results.forEach(rental => {
+              rentals.data.search_results.forEach(rental => {
                 if (cars.length < 20) {
-                  rental.cars.forEach(car => {
-                    if (cars.length < 20) {
-                      const acriss = car.vehicle_info.acriss_code;
+                  const group = rental.vehicle_info.group;
 
-                      /* Format rental company address to title case, excluding
-                      directional acronyms */
-                      rental.address.line1 = rental.address.line1
-                        .replace(/\w\S*/g, word =>
-                          ['NE', 'NW', 'SE', 'SW'].includes(word) ? word :
-                          word.charAt(0).toUpperCase() + word.substr(1)
-                          .toLowerCase());
+                  /* Get difference between searched pickup location and
+                  rental car company's longitudes and latitudes */
+                  const distance = Math.abs(Number(rental.supplier_info.latitude) -
+                    this.state.location.location.lat) +
+                    Math.abs(Number(rental.supplier_info.longitude) -
+                    this.state.location.location.lng);
 
-                      // Format rental company city to title case
-                      rental.address.city = rental.address.city
-                        .replace(/\w\S*/g, word =>
-                          word.charAt(0).toUpperCase() + word.substr(1)
-                          .toLowerCase());
-
-                      // Format rental company name to title case
-                      rental.provider.company_name = rental.provider
-                        .company_name.replace(/\w\S*/g, word =>
-                          word.charAt(0).toUpperCase() + word.substr(1)
-                          .toLowerCase());
-
-                      /* Get difference between searched pickup location and
-                      rental car company's longitudes and latitudes */
-                      const distance = Math.abs(rental.location.latitude -
-                        this.state.location.location.lat) +
-                        Math.abs(rental.location.longitude -
-                        this.state.location.location.lng);
-
-                      cars.push({
-                        id: rental.provider.company_code + acriss,
-                        type: this.types[acriss.charAt(1)],
-                        category: this.categories[acriss.charAt(0)],
-                        selected: false,
-                        acriss: acriss,
-                        company: rental.provider.company_name,
-                        distance: distance,
-                        coords: rental.location,
-                        address: rental.address,
-                        airport: rental.airport ? rental.airport : null,
-                        price: car.estimated_total.amount
-                      });
-                    }
+                  cars.push({
+                    id: rental.vehicle_id,
+                    type: rental.vehicle_info.v_name,
+                    selected: false,
+                    image: rental.vehicle_info.image_url,
+                    companyLogo: rental.supplier_info.logo_url,
+                    group,
+                    company: rental.supplier_info.name,
+                    distance,
+                    address: rental.route_info.pickup,
+                    price: rental.pricing_info.price
                   });
                 }
               });
@@ -263,7 +203,7 @@ class App extends Component {
 
               document.body.style.cursor = 'default';
 
-              this.setState({cars: cars});
+              this.setState({cars});
 
               this.setState({buttons: updatedButtons, pickupSubmitted: false});
             }
@@ -307,8 +247,8 @@ class App extends Component {
     }
 
     else if (sortOption === 'type') {
-      updatedCars.sort((a, b) => (a.category > b.category) ? 1 :
-        ((b.category > a.category) ? -1 : 0));
+      updatedCars.sort((a, b) => (a.type > b.type) ? 1 :
+        ((b.type > a.type) ? -1 : 0));
     }
 
     return this.setState({cars: updatedCars});
@@ -361,9 +301,8 @@ class App extends Component {
 
     // Get booking information
     const booking = JSON.stringify({
-      car: car.acriss,
-      company_address: car.address.line1 + ', ' + car.address.city +
-        ', ' + car.address.region,
+      car: car.type,
+      company_address: car.address.address,
       company_name: car.company,
       end_date: this.state.endDate.format('MM-DD-YYYY'),
       location: this.state.location.label,

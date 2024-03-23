@@ -48,13 +48,11 @@ class BookingConfirm extends Component {
                     id={this.props.selectedCar.id}
                     selected={this.props.selectedCar.selected}
                     days={days}
-                    acriss={this.props.selectedCar.acriss}
-                    company={this.props.selectedCar.company.toLowerCase()}
-                    coords={this.props.selectedCar.location}
+                    group={this.props.selectedCar.group}
+                    company={this.props.selectedCar.company}
+                    companyLogo={this.props.selectedCar.companyLogo}
                     address={this.props.selectedCar.address}
-                    airport={this.props.selectedCar.airport ?
-                      this.props.selectedCar.airport : null}
-                    category={this.props.selectedCar.category}
+                    image={this.props.selectedCar.image}
                     type={this.props.selectedCar.type}
                     price={this.props.selectedCar.price}
                     selectCar={this.selectCar}
