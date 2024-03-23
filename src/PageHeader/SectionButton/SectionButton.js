@@ -44,7 +44,7 @@ class SectionButton extends Component {
         'section-button' + (this.props.selected ? ' active' : '')}>
 
         <button
-          className="d-flex justify-content-center round"
+          className="d-flex justify-content-center align-items-center round"
           style={this.props.disabled ? disabledStyle : enabledStyle}
           data-name={this.props.name}
           disabled={this.props.disabled}
