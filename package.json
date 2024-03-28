@@ -11,7 +11,7 @@
     "react-dependent-script": "1.1.0",
     "react-dom": "16.5.2",
     "react-geosuggest": "2.8.0",
-    "react-scripts": "1.1.5",
+    "react-scripts": "5.0.1",
     "react-with-direction": "1.3.0"
   },
   "scripts": {
