@@ -92,31 +92,31 @@ class CarTable extends Component {
                 </select>
 
               </div>
+              <div className="cars-table-wrapper">
+                <table className="cars-table">
+                  <tbody>
 
-              <table className="cars-table">
-                <tbody>
+                    {this.props.cars.map((car, ind) =>
+                      <CarRow
+                        key={car.id + ind}
+                        id={car.id}
+                        selected={car.selected}
+                        days={days}
+                        state={locationState}
+                        group={car.group}
+                        company={car.company}
+                        companyLogo={car.companyLogo}
+                        address={car.address}
+                        image={car.image}
+                        type={car.type}
+                        price={car.price}
+                        selectCar={this.selectCar}
+                        />
+                    )}
 
-                  {this.props.cars.map((car, ind) =>
-                    <CarRow
-                      key={car.id + ind}
-                      id={car.id}
-                      selected={car.selected}
-                      days={days}
-                      state={locationState}
-                      group={car.group}
-                      company={car.company}
-                      companyLogo={car.companyLogo}
-                      address={car.address}
-                      image={car.image}
-                      type={car.type}
-                      price={car.price}
-                      selectCar={this.selectCar}
-                      />
-                  )}
-
-                </tbody>
-              </table>
-
+                  </tbody>
+                </table>
+              </div>
           </div>
 
           <AdvanceButton
