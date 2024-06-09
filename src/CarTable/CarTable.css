@@ -9,9 +9,13 @@
 }
 
 .cars-table-container {
-  height: 80%;
+  height: 85%;
   width: 80%;
   max-width: 800px;
+}
+
+.cars-table-wrapper {
+  height: 85%;
   overflow: auto;
 }
 
@@ -20,7 +24,7 @@
 }
 
 .sort-menu {
-  position: fixed;
+  height: fit-content;
   padding: 5px;
   padding-left: 7px;
   margin-right: 36px;
@@ -45,7 +49,6 @@
 }
 
 .cars-container .advance {
-  position: absolute;
   top: 50%;
   right: 5%;
 }
