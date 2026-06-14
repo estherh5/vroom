@@ -1,4 +1,38 @@
-.DateRangePickerInput {
-  border: none !important;
-  background-color: #ffa500 !important;
+.date-range-input {
+  position: relative;
+}
+
+/* Button that displays the selected date range and toggles the calendar. */
+.date-range-display {
+  border: none;
+  background-color: #ffa500;
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.date-range-display:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* Pop-out calendar container. */
+.date-range-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+}
+
+/* Match the calendar's accent color to the app's orange theme. */
+.rdp-root {
+  --rdp-accent-color: #ffa500;
+  --rdp-accent-background-color: #fff3e0;
 }
