@@ -23,6 +23,7 @@ export interface GeoLocation {
 export interface CarAddress {
   name: string;
   address: string;
+  location?: { lat: number; lng: number };
 }
 
 // A rental car option displayed to the user.

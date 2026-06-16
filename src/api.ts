@@ -121,6 +121,23 @@ function rentalDays(startDate: Date, endDate: Date): number {
   return Math.max(1, Math.ceil(duration / DAY_IN_MS));
 }
 
+function offsetLocation(
+  location: GeoLocation,
+  distance: number,
+  index: number,
+): { lat: number; lng: number } {
+  const angle = ((index + 1) * 47 * Math.PI) / 180;
+  const latitudeOffset = (distance / 69) * Math.cos(angle);
+  const longitudeOffset =
+    (distance / (69 * Math.cos((location.location.lat * Math.PI) / 180))) *
+    Math.sin(angle);
+
+  return {
+    lat: Number((location.location.lat + latitudeOffset).toFixed(6)),
+    lng: Number((location.location.lng + longitudeOffset).toFixed(6)),
+  };
+}
+
 // Generate stable demo rental options for development and static deployments.
 function searchDemoCars(
   location: GeoLocation,
@@ -147,6 +164,7 @@ function searchDemoCars(
       address: {
         name: `${locationName} Rental Center`,
         address: location.label,
+        location: offsetLocation(location, distance, index),
       },
       price: dailyPrice * days,
     };
@@ -216,7 +234,13 @@ export async function searchBookingCars(
     distance:
       Math.abs(Number(rental.supplier_info.latitude) - lat) +
       Math.abs(Number(rental.supplier_info.longitude) - lng),
-    address: rental.route_info.pickup,
+    address: {
+      ...rental.route_info.pickup,
+      location: {
+        lat: Number(rental.supplier_info.latitude),
+        lng: Number(rental.supplier_info.longitude),
+      },
+    },
     price: rental.pricing_info.price,
   }));
 
