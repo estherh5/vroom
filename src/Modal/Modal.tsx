@@ -38,14 +38,26 @@ export default function Modal({ display, message, status, onCloseModal }: Props)
 
   return (
     <div className={"modal-container" + (display ? "" : " hidden")}>
-      <div className="modal d-flex flex-column" ref={nodeRef}>
-        <button className="close-button" onClick={onCloseModal}>
-          X
+      <div
+        aria-label={status === "success" ? "Success message" : "Error message"}
+        aria-modal="true"
+        className="message-modal d-flex flex-column"
+        ref={nodeRef}
+        role="dialog"
+      >
+        <button
+          aria-label="Close message"
+          className="close-button"
+          onClick={onCloseModal}
+          type="button"
+        >
+          &times;
         </button>
 
         <div className="modal-body d-flex align-items-center justify-content-center">
-          <div className={status ?? undefined}>
+          <div className={"modal-content-panel " + (status ?? "")}>
             <i
+              aria-hidden="true"
               className={
                 "far " +
                 (status === "fail" ? "fa-times-circle" : "fa-check-circle") +

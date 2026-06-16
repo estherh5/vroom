@@ -26,7 +26,7 @@ describe("Modal", () => {
         onCloseModal={onCloseModal}
       />,
     );
-    fireEvent.click(screen.getByText("X"));
+    fireEvent.click(screen.getByRole("button", { name: "Close message" }));
     expect(onCloseModal).toHaveBeenCalled();
   });
 });
