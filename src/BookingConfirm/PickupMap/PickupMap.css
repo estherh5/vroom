@@ -1,6 +1,36 @@
-iframe {
-  height: 300px;
+.pickup-map-container {
   width: 80%;
   max-width: 500px;
+  min-height: 300px;
   box-shadow: 1px 1px 1px #000000;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.pickup-map {
+  height: 300px;
+  width: 100%;
+}
+
+.pickup-map-hidden {
+  display: none;
+}
+
+.pickup-map-fallback {
+  min-height: 300px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  color: #2e2e2e;
+  font-family: "Rajdhani", sans-serif;
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.pickup-map-fallback a {
+  color: #d07b00;
+  font-weight: 700;
+  text-decoration: underline;
 }
