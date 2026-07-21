@@ -27,7 +27,7 @@
     "@types/react-dom": "^18.3.5",
     "@types/react-geosuggest": "^2.7.16",
     "@vitejs/plugin-react": "^5.0.0",
-    "eslint": "^9.17.0",
+    "eslint": "^10.7.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
