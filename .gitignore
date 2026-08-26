@@ -21,3 +21,6 @@ yarn-error.log*
 # Editor / OS
 .DS_Store
 *.tsbuildinfo
+
+# netlify CLI link state (local only)
+/.netlify

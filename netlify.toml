@@ -1,0 +1,17 @@
+# Netlify build config. Until now this site had no netlify.toml and its build
+# settings lived only in the Netlify UI; the two values below are transcribed
+# from what that UI already had (`npm run build`, publish `dist/`), so adding
+# this file changes nothing about how the site builds.
+#
+# The reason it exists is the env line. flare stamps every error with the
+# release that produced it, and Vite inlines ONLY names starting with VITE_ —
+# never a computed or aliased access — so Netlify's own COMMIT_REF cannot be
+# read from application code under its own name. Mapping it across that prefix
+# boundary here is what makes `release` a real commit sha instead of null.
+#
+# VITE_FLARE_URL and VITE_FLARE_KEY are deliberately NOT here: a key in a
+# committed file is a key in a public GitHub repo. Those two are set on the
+# site itself (`netlify env:set --context production`).
+[build]
+  command = "VITE_COMMIT_REF=$COMMIT_REF npm run build"
+  publish = "dist/"
