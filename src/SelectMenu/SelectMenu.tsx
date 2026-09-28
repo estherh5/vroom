@@ -185,7 +185,7 @@ export function SelectMenu({
               // onPointerUp, not onClick: iOS WebKit is unreliable about firing
               // synthetic click on non-interactive elements like <li>. Keyboard
               // activation is handled on the trigger, so nothing is lost here.
-              onPointerUp={() => commit(i)}
+              onPointerUp={(e) => { if (e.pointerType === "touch") swallowGhostClick(); commit(i); }}
             >
               {o.label}
             </li>
@@ -194,4 +194,16 @@ export function SelectMenu({
       )}
     </div>
   );
+}
+
+/** A tap commits on pointerup, which unmounts the popup; the browser's trailing click then
+ *  lands on whatever was under the finger — a button, a link, another dropdown's trigger.
+ *  Its target has already left the DOM, so nothing on the option can cancel it. Stop that one
+ *  click at the window before anything else hears it; the timeout covers a click that never
+ *  comes, so a later real click is never eaten. */
+function swallowGhostClick(ms = 600) {
+  const stop = (e: Event) => { e.preventDefault(); e.stopPropagation(); done(); };
+  const done = () => { window.removeEventListener("click", stop, true); clearTimeout(timer); };
+  window.addEventListener("click", stop, true);
+  const timer = setTimeout(done, ms);
 }
