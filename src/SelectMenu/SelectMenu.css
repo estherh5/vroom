@@ -1,0 +1,97 @@
+/* Fleet-standard dropdown (ported from space's SelectMenu), in vroom's own vocabulary:
+   white card on a 1px black drop shadow, Source Sans Pro, the car page's yellow as the
+   active wash. `.selectbox` is the trigger; size variants only change padding/type. */
+.selectbox {
+  font: inherit;
+  font-family: 'Source Sans Pro', sans-serif;
+  text-align: left;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 32px 10px 10px;
+  border: none;
+  border-radius: 0;
+  background-color: #ffffff;
+  color: #000000;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 11px 7px;
+}
+
+/* Auto-width variant for inline rows, where the control sits beside a label rather
+   than filling a field column. */
+.selectbox--auto {
+  width: auto;
+}
+
+.selectbox:hover:not(:disabled) {
+  background-color: #fff598;
+}
+
+.selectbox:focus-visible,
+.selectbox[aria-expanded="true"] {
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+  background-color: #fff598;
+}
+
+.selectbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.selectbox-value {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* display:contents so the trigger participates directly in the parent's flex/grid
+   layout. The popup is fixed, so it needs no positioned ancestor. */
+.selectmenu {
+  display: contents;
+}
+
+.selectmenu-popup {
+  position: fixed;
+  z-index: 3000;
+  max-height: 260px;
+  max-width: calc(100vw - 24px);
+  overflow-y: auto;
+  margin: 0;
+  padding: 3px;
+  list-style: none;
+  background: #ffffff;
+  box-shadow: 1px 1px 1px #000000, 0 0 0 1px #000000;
+}
+
+/* 44px is the fleet's touch floor for option rows; flex centring keeps the label
+   optically centred in the taller row. */
+.selectmenu-popup li {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1rem;
+  color: #000000;
+  cursor: pointer;
+}
+
+.selectmenu-popup li.is-active {
+  background: #fff598;
+}
+
+.selectmenu-popup li[aria-selected="true"] {
+  font-weight: 700;
+}
+
+/* white-space: pre — the pseudo-element is a flex item, so the leading space would
+   otherwise collapse against the label. */
+.selectmenu-popup li[aria-selected="true"]::after {
+  content: " \2713";
+  white-space: pre;
+}

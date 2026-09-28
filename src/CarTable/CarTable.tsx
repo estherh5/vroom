@@ -5,6 +5,7 @@ import "./CarTable.css";
 import AdvanceButton from "../AdvanceButton/AdvanceButton";
 import InfoHeader from "../InfoHeader/InfoHeader";
 import CarRow from "./CarRow/CarRow";
+import { SelectMenu } from "../SelectMenu/SelectMenu";
 import type { Car, GeoLocation, SortOption } from "../types";
 
 interface Props {
@@ -16,6 +17,12 @@ interface Props {
   selectCar: (carId: string) => void;
   advanceSection: () => void;
 }
+
+const SORT_OPTIONS = [
+  { value: "price", label: "price" },
+  { value: "distance", label: "distance" },
+  { value: "type", label: "type" },
+] satisfies { value: SortOption; label: string }[];
 
 // Table of rental car options.
 export default function CarTable({
@@ -31,11 +38,16 @@ export default function CarTable({
     cars.some((car) => car.selected),
   );
 
+  const [sort, setSortValue] = useState<SortOption>("price");
+
   // Length of the rental period in days.
   const days = differenceInDays(endDate, startDate);
 
-  const handleSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSort(event.currentTarget.value as SortOption);
+  // Re-choosing the current option is a no-op, as it was with the native select.
+  const handleSort = (value: string) => {
+    if (value === sort) return;
+    setSortValue(value as SortOption);
+    setSort(value as SortOption);
   };
 
   // Enable the Advance button once the user selects a car.
@@ -61,11 +73,14 @@ export default function CarTable({
         <div className="sort-menu">
           <span className="sort-title">Sort by...</span>
 
-          <select title="Sort car rental results" onChange={handleSort}>
-            <option>price</option>
-            <option>distance</option>
-            <option>type</option>
-          </select>
+          <SelectMenu
+            className="selectbox selectbox--auto"
+            ariaLabel="Sort car rental results"
+            placeholder="price"
+            value={sort}
+            options={SORT_OPTIONS}
+            onChange={handleSort}
+          />
         </div>
 
         <div className="cars-table-wrapper">
