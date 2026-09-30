@@ -15,3 +15,11 @@
 [build]
   command = "VITE_COMMIT_REF=$COMMIT_REF npm run build"
   publish = "dist/"
+
+# Security response headers on every path.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Content-Security-Policy = "frame-ancestors 'self'"
