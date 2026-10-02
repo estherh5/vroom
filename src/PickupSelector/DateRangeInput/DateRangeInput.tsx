@@ -47,7 +47,7 @@ export default function DateRangeInput({
 
   const label =
     startDate && endDate
-      ? `${format(startDate, "M/d/yyyy")} – ${format(endDate, "M/d/yyyy")}`
+      ? `${format(startDate, "M/d/yyyy")}–${format(endDate, "M/d/yyyy")}`
       : "Select dates";
 
   return (

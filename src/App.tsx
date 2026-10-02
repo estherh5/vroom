@@ -25,12 +25,12 @@ const INITIAL_BUTTONS: SectionButtonData[] = [
 ];
 
 const REQUEST_ERROR =
-  "Your rental car request could not be processed. Please try again soon.";
+  "Your rental car request could not be processed. Try again soon.";
 const NO_CARS_ERROR =
-  "No cars could be found for your location and date range. Please update " +
-  "your search criteria.";
+  "No cars found for your location and date range. Try different dates or " +
+  "a different location.";
 const BOOKING_ERROR =
-  "Your booking could not be confirmed. Please try again soon.";
+  "Your booking could not be confirmed. Try again soon.";
 
 // Main application component.
 export default function App() {
@@ -183,7 +183,7 @@ export default function App() {
       document.body.style.cursor = "default";
       setDisplayModal(true);
       setModalMessage(
-        `Your booking is confirmed! Your confirmation code is ${confirmationCode}.`,
+        `Booking confirmed! Your confirmation code is ${confirmationCode}.`,
       );
       setServerStatus("success");
       setBookingSubmitted(true);
