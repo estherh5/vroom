@@ -65,6 +65,36 @@ export type FlarePayload = {
   context: Record<string, unknown> | null;
 };
 
+/**
+ * The diagnosis an error carries on itself: a plain-object `params` and up to
+ * three links of its `cause` chain (name and message only, never a cause's
+ * stack). Ported from flare/reporters/next/lib/flare.ts#errorDetail, which has
+ * the full rationale. Both keys are `_`-prefixed so they cannot collide with a
+ * caller's context, and the result still passes through `boundContext`.
+ */
+export function errorDetail(error: Error): Record<string, unknown> {
+  const detail: Record<string, unknown> = {};
+
+  const params = (error as Error & { params?: unknown }).params;
+  // A plain object only. An array or a scalar `params` is somebody else's field
+  // by that name, not a diagnostic payload.
+  if (params !== null && typeof params === "object" && !Array.isArray(params)) {
+    detail._params = params;
+  }
+
+  const chain: Array<{ name: string; message: string }> = [];
+  const seen = new Set<unknown>();
+  let cause: unknown = (error as Error & { cause?: unknown }).cause;
+  while (cause instanceof Error && chain.length < 3 && !seen.has(cause)) {
+    seen.add(cause);
+    chain.push({ name: cause.name || "Error", message: cause.message || "" });
+    cause = (cause as Error & { cause?: unknown }).cause;
+  }
+  if (chain.length > 0) detail._cause = chain;
+
+  return detail;
+}
+
 export function buildPayload(err: unknown, context: Record<string, unknown> = {}): FlarePayload {
   const { kind, url, ...rest } = context;
   const error = err instanceof Error ? err : new Error(typeof err === "string" ? err : "Unknown error");
@@ -77,7 +107,7 @@ export function buildPayload(err: unknown, context: Record<string, unknown> = {}
     release: RELEASE,
     environment: "production",
     occurredAt: Date.now(),
-    context: boundContext(rest),
+    context: boundContext({ ...rest, ...errorDetail(error) }),
   };
 }
 

@@ -6,6 +6,7 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- 2026-10 Flare reports now carry a wrapped error's `params` and its `cause` chain (`errorDetail` in `src/lib/flare.ts`, ported from the Next template), with the template's six cases in `src/lib/flare.test.ts`.
 - 2026-10 Copy pass: tighter wording, no em-dashes (fleet copy standard).
 - 2026-09 [security] Every response sends `X-Content-Type-Options: nosniff` and a same-origin frame guard (`netlify.toml` `[[headers]]`).
 - 2026-09 The test suite blocks real network calls by default, with a pin test on the module-load guard.
