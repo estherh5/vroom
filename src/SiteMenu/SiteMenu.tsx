@@ -9,17 +9,17 @@ interface Project {
 
 const PROJECTS: Project[] = [
   { link: "https://crystalprism.io/", title: "Home", favicon: "https://crystalprism.io/favicon.ico" },
-  { link: "https://crystalprism.io/timespace/", title: "Timespace", favicon: "https://crystalprism.io/timespace/favicon.ico" },
-  { link: "https://crystalprism.io/shapes-in-rain/", title: "Shapes in Rain", favicon: "https://crystalprism.io/shapes-in-rain/favicon.ico" },
-  { link: "https://crystalprism.io/rhythm-of-life/", title: "Rhythm of Life", favicon: "https://crystalprism.io/rhythm-of-life/favicon.ico" },
-  { link: "https://crystalprism.io/canvashare/", title: "CanvaShare", favicon: "https://crystalprism.io/canvashare/favicon.ico" },
-  { link: "https://crystalprism.io/thought-writer/", title: "Thought Writer", favicon: "https://crystalprism.io/thought-writer/favicon.ico" },
-  { link: "https://crystalprism.io/vicarious/", title: "Vicarious", favicon: "https://crystalprism.io/vicarious/favicon.ico" },
+  { link: "https://timespace.crystalprism.io/", title: "Timespace", favicon: "https://timespace.crystalprism.io/favicon.ico" },
+  { link: "https://shapes-in-rain.crystalprism.io/", title: "Shapes in Rain", favicon: "https://shapes-in-rain.crystalprism.io/favicon.ico" },
+  { link: "https://rhythm-of-life.crystalprism.io/", title: "Rhythm of Life", favicon: "https://rhythm-of-life.crystalprism.io/favicon.ico" },
+  { link: "https://canvashare.crystalprism.io/", title: "CanvaShare", favicon: "https://canvashare.crystalprism.io/favicon.ico" },
+  { link: "https://thought-writer.crystalprism.io/", title: "Thought Writer", favicon: "https://thought-writer.crystalprism.io/favicon.ico" },
+  { link: "https://vicarious.crystalprism.io/", title: "Vicarious", favicon: "https://vicarious.crystalprism.io/favicon.ico" },
   { link: "https://hn-stats.crystalprism.io/", title: "Hacker News Stats", favicon: "https://hn-stats.crystalprism.io/favicon.ico" },
   { link: "https://pause.crystalprism.io/", title: "Pause", favicon: "https://pause.crystalprism.io/favicon.ico" },
   { link: "https://marian.crystalprism.io/", title: "Marian", favicon: "https://marian.crystalprism.io/favicon.ico" },
   { link: "https://vroom.crystalprism.io/", title: "Vroom", favicon: "https://vroom.crystalprism.io/favicon.ico" },
-  { link: "https://crystalprism.io/user/sign-in/", title: "Account", favicon: "https://crystalprism.io/favicon.ico" },
+  { link: "https://account.crystalprism.io/sign-in/", title: "Account", favicon: "https://crystalprism.io/favicon.ico" },
 ];
 
 const CLOSED_ICON = "https://crystalprism.io/images/site-menu-icon-shadow.svg";
