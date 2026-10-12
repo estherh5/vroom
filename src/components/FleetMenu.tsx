@@ -35,9 +35,13 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
   function toggle() {
     const r = triggerRef.current?.getBoundingClientRect();
     if (r && !open) {
+      // clientWidth/Height, not innerWidth/Height: a fixed panel's offsets are
+      // measured from the viewport inside a classic scrollbar (0 where there is no layout)
+      const vw = document.documentElement.clientWidth || window.innerWidth;
+      const vh = document.documentElement.clientHeight || window.innerHeight;
       setPos(placement === "up-start"
-        ? { bottom: window.innerHeight - r.top + 8, left: Math.max(16, r.left), maxBlockSize: Math.max(160, Math.min(640, r.top - 24)) }
-        : { top: r.bottom + 8, right: Math.max(16, window.innerWidth - r.right), maxBlockSize: Math.max(160, Math.min(640, window.innerHeight - r.bottom - 24)) });
+        ? { bottom: vh - r.top + 8, left: Math.max(16, r.left), maxBlockSize: Math.max(160, Math.min(640, r.top - 24)) }
+        : { top: r.bottom + 8, right: Math.max(16, vw - r.right), maxBlockSize: Math.max(160, Math.min(640, vh - r.bottom - 24)) });
     }
     setOpen((o) => !o);
   }
@@ -72,7 +76,7 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
     };
   }, [open]);
 
-  const initial = user?.email.charAt(0).toUpperCase() ?? null;
+  const who = user?.email.trim() || null;
 
   return (
     <>
@@ -82,10 +86,10 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
         className="fleet-trigger"
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        aria-label={user ? `Apps and account, ${user.email}` : "Apps and sign in"}
+        aria-label={who ? `Apps and account, ${who}` : user ? "Apps and account" : "Apps and sign in"}
         onClick={toggle}
       >
-        {initial ? <span aria-hidden="true">{initial}</span> : <GridGlyph />}
+        {who ? <span aria-hidden="true">{who.charAt(0).toUpperCase()}</span> : <GridGlyph />}
       </button>
       {open && createPortal(
         <>
@@ -101,7 +105,7 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
           >
             {(user || statsHref || signInHref) && (
               <div className="fleet-account">
-                {user && <p className="fleet-email">{user.email}</p>}
+                {who && <p className="fleet-email">{who}</p>}
                 {user && settingsHref && <a href={settingsHref} className="fleet-row">Settings</a>}
                 {statsHref && <a href={statsHref} className="fleet-row">Stats</a>}
                 {user && signOutAction && (
@@ -115,7 +119,7 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
                 <li key={app.key}>
                   <a href={app.url} className="fleet-app" aria-current={app.current ? "page" : undefined}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- remote fleet icon, 40px */}
-                    <img src={app.icon} alt="" width={40} height={40} loading="lazy" />
+                    <img src={app.icon} alt="" width={40} height={40} loading="eager" decoding="async" />
                     <span>{app.name}</span>
                   </a>
                 </li>

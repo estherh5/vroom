@@ -134,4 +134,41 @@ describe("FleetMenu", () => {
     fireEvent.click(trigger);
     expect(screen.getByRole("dialog").style.maxBlockSize).toBe(`${420 - 56 - 24}px`);
   });
+  it("a classic scrollbar is not counted in the popover's right offset", () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280 });
+    Object.defineProperty(document.documentElement, "clientWidth", { configurable: true, value: 1265 });
+    render(<FleetMenu {...base} user={null} />);
+    const trigger = screen.getByRole("button", { name: /apps and sign in/i });
+    trigger.getBoundingClientRect = () => ({ top: 12, bottom: 56, left: 1200, right: 1244, width: 44, height: 44, x: 1200, y: 12, toJSON() {} });
+    fireEvent.click(trigger);
+    expect(screen.getByRole("dialog").style.right).toBe("21px");
+    delete (document.documentElement as { clientWidth?: number }).clientWidth;
+  });
+  it("a blank email: grid glyph, no email line, no dangling comma, account rows kept", () => {
+    render(<FleetMenu {...base} user={{ email: "" }} />);
+    const trigger = screen.getByRole("button", { name: "Apps and account" });
+    expect(trigger.querySelector("svg")).toBeTruthy();
+    expect(trigger.textContent).toBe("");
+    fireEvent.click(trigger);
+    expect(document.querySelector(".fleet-email")).toBeNull();
+    expect(rowTexts()).toEqual(["Settings", "Sign out"]);
+  });
+  it("a whitespace email reads as blank; a padded one is trimmed", () => {
+    const { unmount } = render(<FleetMenu {...base} user={{ email: "   " }} />);
+    expect(screen.getByRole("button", { name: "Apps and account" })).toBeTruthy();
+    unmount();
+    render(<FleetMenu {...base} user={{ email: " esther@example.com " }} />);
+    const trigger = screen.getByRole("button", { name: "Apps and account, esther@example.com" });
+    expect(trigger.textContent).toBe("E");
+    fireEvent.click(trigger);
+    expect(document.querySelector(".fleet-email")?.textContent).toBe("esther@example.com");
+  });
+  it("app icons load eagerly and decode off the main thread", () => {
+    render(<FleetMenu {...base} user={null} />);
+    fireEvent.click(screen.getByRole("button", { name: /apps and sign in/i }));
+    for (const img of document.querySelectorAll(".fleet-app img")) {
+      expect(img.getAttribute("loading")).toBe("eager");
+      expect(img.getAttribute("decoding")).toBe("async");
+    }
+  });
 });
