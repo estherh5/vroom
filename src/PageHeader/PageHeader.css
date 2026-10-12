@@ -24,9 +24,11 @@
 
 /* With the trigger's 64px reserved, three 25px-padded 70px buttons no longer
    fit a phone's nav and the third wraps; the columns center them anyway. */
-.nav .section-button {
-  padding-left: 0px;
-  padding-right: 0px;
+@media only screen and (max-width: 959.98px) {
+  .nav .section-button {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
 }
 
 .liner {
@@ -52,7 +54,8 @@
 @media only screen and (min-width: 960px) {
   .nav {
     padding-left: 50px;
-    padding-right: 50px;
+    /* The fleet trigger spans 16-60px from the right edge. */
+    padding-right: 64px;
   }
 
   .liner {
