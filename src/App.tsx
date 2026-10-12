@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import "./App.css";
 
 import { createBooking, searchCars } from "./api";
 import BookingConfirm from "./BookingConfirm/BookingConfirm";
 import CarTable from "./CarTable/CarTable";
+import { FleetMenu } from "./components/FleetMenu";
+import { getFleetApps, shapeFleet } from "./lib/fleet";
 import Modal from "./Modal/Modal";
 import PageHeader from "./PageHeader/PageHeader";
 import PickupSelector from "./PickupSelector/PickupSelector";
-import SiteMenu from "./SiteMenu/SiteMenu";
 import type {
   Car,
   GeoLocation,
@@ -46,6 +47,20 @@ export default function App() {
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
   const [pickupSubmitted, setPickupSubmitted] = useState(false);
   const [bookingSubmitted, setBookingSubmitted] = useState(false);
+  // Vroom has no account, so the fleet menu is apps only. The baked list
+  // renders at once; crystalprism.io/apps.json replaces it when it arrives
+  // (getFleetApps falls back to the same baked list on failure).
+  const [fleetApps, setFleetApps] = useState(() => shapeFleet(null, "vroom"));
+
+  useEffect(() => {
+    let live = true;
+    void getFleetApps("vroom").then((list) => {
+      if (live) setFleetApps(list);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   const showError = (message: string) => {
     document.body.style.cursor = "default";
@@ -205,9 +220,21 @@ export default function App() {
         onCloseModal={() => setDisplayModal(false)}
       />
 
-      <PageHeader buttons={buttons} onSelectButton={setSelectedButton} />
-
-      <SiteMenu />
+      <PageHeader
+        buttons={buttons}
+        onSelectButton={setSelectedButton}
+        menu={
+          <FleetMenu
+            apps={fleetApps}
+            user={null}
+            settingsHref={null}
+            statsHref={null}
+            signInHref={null}
+            signOutAction={null}
+            placement="down-end"
+          />
+        }
+      />
 
       <div className="row align-items-start justify-content-center content-container">
         {selectedButton?.name === "pickup" ? (

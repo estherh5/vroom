@@ -31,12 +31,48 @@ a:hover {
   text-decoration: none;
 }
 
+/* The footer is the last flex item of a 100vh, overflow-hidden body, and the
+   section content (with its full-bleed photo) runs past #root onto it. The
+   z-index keeps its links on top; the white fade lets the photo end softly
+   while holding the muted text at contrast over any part of the picture. */
 #footer {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  text-align: center;
-  line-height: 1.3;
   z-index: 100;
+  background: linear-gradient(to top, rgb(255 255 255 / 0.92) 55%, rgb(255 255 255 / 0));
+}
+
+/* Fleet menu + footer (components/fleet.css). Vroom has no color tokens, so
+   these are its literals: white surface, black ink, the #dedede header rule.
+   The #ffa200 link orange is 2:1 on white, too faint for the current-app ring
+   and the focus outline, so black is the accent and the orange rides on it as
+   the trigger's glyph (10.9:1). Muted is the one new value: the app's grays
+   (#cacaca) fail 4.5:1 for the footer's text. Rajdhani is the old footer's
+   face. Bootstrap's reboot already sets border-box globally. */
+:root {
+  --fleet-surface: #ffffff;
+  --fleet-ink: #000000;
+  --fleet-muted: #595959;
+  --fleet-line: #dedede;
+  --fleet-accent: #000000;
+  --fleet-on-accent: #ffa200;
+  --fleet-font: 'Rajdhani', sans-serif;
+  --fleet-radius: 12px;
+  --fleet-footer-clear: 0px;
+}
+
+/* The global `a` and `a:hover` rules strip every underline, which leaves the
+   footer's muted links no hover cue at all. */
+.fleet-footer a:hover {
+  color: var(--fleet-ink);
+  text-decoration: underline;
+}
+
+/* Bootstrap's .fixed-top header sits at z-index 1030, above the kit's scrim
+   (1000) and panel (1001); the popover opens over the header's lower half.
+   fleet.css loads after this file, so the overrides need the extra :root. */
+:root .fleet-scrim {
+  z-index: 1040;
+}
+
+:root .fleet-panel {
+  z-index: 1041;
 }

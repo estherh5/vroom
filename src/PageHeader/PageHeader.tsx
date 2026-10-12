@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import "./PageHeader.css";
 
 import SectionButton from "./SectionButton/SectionButton";
@@ -7,10 +7,12 @@ import type { SectionButtonData, SectionName } from "../types";
 interface Props {
   buttons: SectionButtonData[];
   onSelectButton: (name: SectionName) => void;
+  // The fleet apps menu, held at the header's trailing end.
+  menu: ReactNode;
 }
 
 // Page header with buttons representing each section of the app.
-export default function PageHeader({ buttons, onSelectButton }: Props) {
+export default function PageHeader({ buttons, onSelectButton, menu }: Props) {
   const selectedButton = buttons.find((button) => button.selected);
 
   // Set background color of the header based on the selected section.
@@ -41,6 +43,8 @@ export default function PageHeader({ buttons, onSelectButton }: Props) {
           />
         ))}
       </ul>
+
+      <div className="header-menu">{menu}</div>
     </div>
   );
 }

@@ -5,7 +5,28 @@
 .nav {
   position: relative;
   height: 100%;
+  padding-right: 64px;
   box-shadow: 1px 1px 1px #dedede;
+}
+
+/* The fleet apps menu sits at the header's trailing end, centered on the
+   section buttons' line. Below 960px the nav gives up the trigger's width on
+   its right, and the liner gives up the same, so the three buttons and the
+   line between them stay centered on each other. */
+.header-menu {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  z-index: 3;
+}
+
+/* With the trigger's 64px reserved, three 25px-padded 70px buttons no longer
+   fit a phone's nav and the third wraps; the columns center them anyway. */
+.nav .section-button {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .liner {
@@ -14,7 +35,7 @@
   width: 65%;
   top: 50%;
   left: 0px;
-  right: 0px;
+  right: 64px;
   margin: 0px auto;
   background-color: #cacaca;
   z-index: 1;
@@ -32,5 +53,9 @@
   .nav {
     padding-left: 50px;
     padding-right: 50px;
+  }
+
+  .liner {
+    right: 0px;
   }
 }
