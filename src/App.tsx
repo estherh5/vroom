@@ -232,6 +232,7 @@ export default function App() {
             signInHref={null}
             signOutAction={null}
             placement="down-end"
+            triggerClassName="vroom-fleet-trigger"
           />
         }
       />

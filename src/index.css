@@ -43,8 +43,8 @@ a:hover {
 /* Fleet menu + footer (components/fleet.css). Vroom has no color tokens, so
    these are its literals: white surface, black ink, the #dedede header rule.
    The #ffa200 link orange is 2:1 on white, too faint for the current-app ring
-   and the focus outline, so black is the accent and the orange rides on it as
-   the trigger's glyph (10.9:1). Muted is the one new value: the app's grays
+   and the focus outline, so black is the accent. The trigger wears its own
+   .vroom-fleet-trigger (PageHeader.css). Muted is the one new value: the app's grays
    (#cacaca) fail 4.5:1 for the footer's text. Rajdhani is the old footer's
    face. Bootstrap's reboot already sets border-box globally. */
 :root {
@@ -53,7 +53,6 @@ a:hover {
   --fleet-muted: #595959;
   --fleet-line: #dedede;
   --fleet-accent: #000000;
-  --fleet-on-accent: #ffa200;
   --fleet-font: 'Rajdhani', sans-serif;
   --fleet-radius: 12px;
   --fleet-footer-clear: 0px;

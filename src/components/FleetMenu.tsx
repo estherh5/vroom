@@ -16,11 +16,14 @@ type Props = {
   signInHref: string | null;
   signOutAction: (() => void | Promise<void>) | null;
   placement: "down-end" | "up-start";
+  // The app's own icon-button class, so the trigger presses, borders and hovers like its
+  // neighbors; the kit's .fleet-trigger look is a zero-specificity fallback beneath it
+  triggerClassName?: string;
 };
 
 const FOCUSABLE = "a[href],button:not([disabled])";
 
-export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, signOutAction, placement }: Props) {
+export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, signOutAction, placement, triggerClassName }: Props) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<CSSProperties>({});
   const panelId = useId();
@@ -83,13 +86,13 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
       <button
         ref={triggerRef}
         type="button"
-        className="fleet-trigger"
+        className={triggerClassName ? `fleet-trigger ${triggerClassName}` : "fleet-trigger"}
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
         aria-label={who ? `Apps and account, ${who}` : user ? "Apps and account" : "Apps and sign in"}
         onClick={toggle}
       >
-        {who ? <span aria-hidden="true">{who.charAt(0).toUpperCase()}</span> : <GridGlyph />}
+        <PrismGlyph />
       </button>
       {open && createPortal(
         <>
@@ -133,10 +136,14 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
   );
 }
 
-function GridGlyph() {
+// The Crystal Prism gem (crystalprism.io/favicon.svg): a table, three crown facets, three
+// pavilion facets. Stroked in currentColor so it takes the host button's ink.
+function PrismGlyph() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" fill="currentColor">
-      {[2, 8, 14].flatMap((y) => [2, 8, 14].map((x) => <circle key={`${x}-${y}`} cx={x + 1} cy={y + 1} r="1.6" />))}
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+      strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round">
+      <path d="M7 3.5h10l5 5.5-10 12L2 9z" />
+      <path d="M2 9h20M9.5 3.5 7.5 9 12 21l4.5-12-2-5.5" />
     </svg>
   );
 }

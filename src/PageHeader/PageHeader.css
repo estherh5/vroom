@@ -62,3 +62,30 @@
     right: 0px;
   }
 }
+
+/* The fleet trigger in the section buttons' language (.round): a white disc in
+   a 5px ring, glyph in the ring's color, black here because it belongs to no
+   section. 44px rather than .round's 50-70px so it fits the 64px the nav
+   reserves. Two classes, so Bootstrap's reboot and SectionButton.css's global
+   `button:focus { outline: none }` can't reach past it: unlike .round, the
+   trigger keeps a keyboard focus ring. */
+.fleet-trigger.vroom-fleet-trigger {
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 0;
+  border: 5px solid #000000;
+  border-radius: 100px;
+  background-color: #ffffff;
+  color: #000000;
+  transition: none;
+}
+
+/* .round neither moves nor shades when pressed. */
+.fleet-trigger.vroom-fleet-trigger:active {
+  transform: none;
+}
+
+.fleet-trigger.vroom-fleet-trigger:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 3px;
+}

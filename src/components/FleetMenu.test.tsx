@@ -11,10 +11,11 @@ const signOut = async () => {};
 const base = { apps, settingsHref: "/settings", statsHref: null, signInHref: "/login", signOutAction: signOut, placement: "down-end" as const };
 
 describe("FleetMenu", () => {
-  it("signed in: initial on trigger, email + Settings + Sign out, no Sign in", () => {
+  it("signed in: prism on trigger, email + Settings + Sign out, no Sign in", () => {
     render(<FleetMenu {...base} user={{ email: "esther@example.com" }} />);
     const trigger = screen.getByRole("button", { name: /apps and account/i });
-    expect(trigger.textContent).toBe("E");
+    expect(trigger.querySelector("svg")).toBeTruthy();
+    expect(trigger.textContent).toBe("");
     fireEvent.click(trigger);
     expect(screen.getByText("esther@example.com")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Settings" })).toBeTruthy();
@@ -144,7 +145,7 @@ describe("FleetMenu", () => {
     expect(screen.getByRole("dialog").style.right).toBe("21px");
     delete (document.documentElement as { clientWidth?: number }).clientWidth;
   });
-  it("a blank email: grid glyph, no email line, no dangling comma, account rows kept", () => {
+  it("a blank email: prism glyph, no email line, no dangling comma, account rows kept", () => {
     render(<FleetMenu {...base} user={{ email: "" }} />);
     const trigger = screen.getByRole("button", { name: "Apps and account" });
     expect(trigger.querySelector("svg")).toBeTruthy();
@@ -159,7 +160,7 @@ describe("FleetMenu", () => {
     unmount();
     render(<FleetMenu {...base} user={{ email: " esther@example.com " }} />);
     const trigger = screen.getByRole("button", { name: "Apps and account, esther@example.com" });
-    expect(trigger.textContent).toBe("E");
+    expect(trigger.textContent).toBe("");
     fireEvent.click(trigger);
     expect(document.querySelector(".fleet-email")?.textContent).toBe("esther@example.com");
   });
@@ -170,5 +171,12 @@ describe("FleetMenu", () => {
       expect(img.getAttribute("loading")).toBe("eager");
       expect(img.getAttribute("decoding")).toBe("async");
     }
+  });
+  it("triggerClassName joins the kit class; without it the kit class stands alone", () => {
+    const { unmount } = render(<FleetMenu {...base} user={null} triggerClassName="iconbtn" />);
+    expect(screen.getByRole("button", { name: /apps and sign in/i }).className).toBe("fleet-trigger iconbtn");
+    unmount();
+    render(<FleetMenu {...base} user={null} />);
+    expect(screen.getByRole("button", { name: /apps and sign in/i }).className).toBe("fleet-trigger");
   });
 });
