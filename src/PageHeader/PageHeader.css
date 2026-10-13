@@ -77,12 +77,6 @@
   border-radius: 100px;
   background-color: #ffffff;
   color: #000000;
-  transition: none;
-}
-
-/* .round neither moves nor shades when pressed. */
-.fleet-trigger.vroom-fleet-trigger:active {
-  transform: none;
 }
 
 .fleet-trigger.vroom-fleet-trigger:focus-visible {
