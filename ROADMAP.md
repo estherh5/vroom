@@ -21,6 +21,7 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
+- **Sign-in and saved bookings, then /stats.** vroom has no sign-in and stores nothing (bookings POST to vroom_api with no user id, `src/api.ts#createBooking`), so a /stats page has no data. Needs the crystalprism SSO ring and a per-user bookings store first.
 ## Declined
 
 ## Open questions
