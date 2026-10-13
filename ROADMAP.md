@@ -21,7 +21,8 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Sign-in and saved bookings, then /stats.** vroom has no sign-in and stores nothing (bookings POST to vroom_api with no user id, `src/api.ts#createBooking`), so a /stats page has no data. Needs the crystalprism SSO ring and a per-user bookings store first.
 ## Declined
+
+- **2026-10 — Sign-in, saved bookings and /stats.** Every search result comes from the deterministic demo rental provider, so a per-user history and stats page would chart sample cars, not real rentals. Not worth a ring sign-in (vroom is a Vite SPA on Netlify and vroom_api is Flask, so neither can mint the Auth.js cookie), a `user_email` column on `booking`, and invitations. Bookings are still stored in vroom_api's `booking` table, just not per user.
 
 ## Open questions
