@@ -6,8 +6,6 @@ export function FleetFooter() {
   return (
     <footer className="fleet-footer">
       <a href="https://crystalprism.io">© 2017–{year} Crystal Prism</a>
-      <span aria-hidden="true">·</span>
-      <a href="https://crystalprism.io/#projects">All apps</a>
     </footer>
   );
 }
