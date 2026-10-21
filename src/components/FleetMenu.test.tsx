@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { FleetMenu } from "./FleetMenu";
 import type { FleetEntry } from "../lib/fleet";
 
@@ -119,13 +119,45 @@ describe("FleetMenu", () => {
     fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
     expect(document.activeElement).toBe(lastApp);
   });
-  it("Sign out closes the panel and calls the action", () => {
+  it("Sign out stays open reading Signing out… until the action lands, then closes", async () => {
     let called = 0;
-    render(<FleetMenu {...base} signOutAction={() => { called++; }} user={{ email: "e@x.co" }} />);
-    fireEvent.click(screen.getByRole("button", { name: /apps and account/i }));
-    fireEvent.click(screen.getByRole("button", { name: "Sign out" }));
+    let land!: () => void;
+    const action = () => { called++; return new Promise<void>((r) => { land = r; }); };
+    render(<FleetMenu {...base} signOutAction={action} user={{ email: "e@x.co" }} />);
+    const trigger = screen.getByRole("button", { name: /apps and account/i });
+    fireEvent.click(trigger);
+    const row = screen.getByRole("button", { name: "Sign out" });
+    fireEvent.click(row);
     expect(called).toBe(1);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(row.textContent).toBe("Signing out…");
+    expect(row.getAttribute("aria-disabled")).toBe("true");
+    expect(row.querySelector(".fleet-spinner")?.getAttribute("aria-hidden")).toBe("true");
+    fireEvent.click(row);
+    fireEvent.pointerDown(document.body);
+    fireEvent.scroll(window);
+    expect(called).toBe(1);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    await act(async () => { land(); });
     expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
+  it("a failed Sign out keeps the menu open with an alert and a retryable row", async () => {
+    let calls = 0;
+    const action = async () => { calls++; throw new Error("offline"); };
+    render(<FleetMenu {...base} signOutAction={action} user={{ email: "e@x.co" }} />);
+    const trigger = screen.getByRole("button", { name: /apps and account/i });
+    fireEvent.click(trigger);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Sign out" })); });
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(screen.getByRole("alert").textContent).toMatch(/couldn’t sign out/i);
+    const row = screen.getByRole("button", { name: "Sign out" });
+    expect(row.getAttribute("aria-disabled")).toBeNull();
+    await act(async () => { fireEvent.click(row); });
+    expect(calls).toBe(2);
+    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.click(trigger);
+    expect(screen.queryByRole("alert")).toBeNull();
   });
   it("a short window caps the popover height to the room below the trigger", () => {
     Object.defineProperty(window, "innerHeight", { configurable: true, value: 420 });

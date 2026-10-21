@@ -26,6 +26,10 @@ const FOCUSABLE = "a[href],button:not([disabled])";
 export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, signOutAction, placement, triggerClassName }: Props) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<CSSProperties>({});
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutFailed, setSignOutFailed] = useState(false);
+  // Read by the document listeners, which are bound once per open
+  const signingOutRef = useRef(false);
   const panelId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -46,7 +50,26 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
         ? { bottom: vh - r.top + 8, left: Math.max(16, r.left), maxBlockSize: Math.max(160, Math.min(640, r.top - 24)) }
         : { top: r.bottom + 8, right: Math.max(16, vw - r.right), maxBlockSize: Math.max(160, Math.min(640, vh - r.bottom - 24)) });
     }
+    if (!open) setSignOutFailed(false);
     setOpen((o) => !o);
+  }
+
+  // The row stays mounted and reads "Signing out…" until the action lands; a redirect
+  // replaces the page, a resolve closes the menu, a rejection keeps it open with an alert
+  async function signOut() {
+    if (!signOutAction || signingOutRef.current) return;
+    signingOutRef.current = true;
+    setSigningOut(true);
+    setSignOutFailed(false);
+    try {
+      await signOutAction();
+      close();
+    } catch {
+      setSignOutFailed(true);
+    } finally {
+      signingOutRef.current = false;
+      setSigningOut(false);
+    }
   }
 
   useEffect(() => {
@@ -62,11 +85,12 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
     }
     function onDown(e: PointerEvent) {
+      if (signingOutRef.current) return;
       const t = e.target as Node;
       if (panelRef.current?.contains(t) || triggerRef.current?.contains(t)) return;
       close();
     }
-    function onResize() { setOpen(false); }
+    function onResize() { if (!signingOutRef.current) setOpen(false); }
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onDown);
     window.addEventListener("resize", onResize);
@@ -112,8 +136,11 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
                 {user && settingsHref && <a href={settingsHref} className="fleet-row">Settings</a>}
                 {statsHref && <a href={statsHref} className="fleet-row">Stats</a>}
                 {user && signOutAction && (
-                  <button type="button" className="fleet-row" onClick={() => { setOpen(false); void signOutAction(); }}>Sign out</button>
+                  <button type="button" className="fleet-row" aria-disabled={signingOut || undefined} onClick={() => void signOut()}>
+                    {signingOut ? <><span className="fleet-spinner" aria-hidden="true" />Signing out…</> : "Sign out"}
+                  </button>
                 )}
+                {signOutFailed && <p role="alert" className="fleet-alert">Couldn’t sign out. Check your connection and try again.</p>}
                 {!user && signInHref && <a href={signInHref} className="fleet-row">Sign in</a>}
               </div>
             )}
