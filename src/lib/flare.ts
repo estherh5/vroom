@@ -63,6 +63,7 @@ export type FlarePayload = {
   environment: "production";
   occurredAt: number;
   context: Record<string, unknown> | null;
+  sessionId: string | null;
 };
 
 /**
@@ -95,6 +96,28 @@ export function errorDetail(error: Error): Record<string, unknown> {
   return detail;
 }
 
+/**
+ * THE TAB THIS ERROR HAPPENED IN. Minted once per tab as `flare_sid` in
+ * sessionStorage (same key as the Next reporter's FlareClient) so every error
+ * from one visit groups together. Ports send the id only: no cookies, no
+ * userRef. Never throws: Safari's private mode, a sandboxed iframe or blocked
+ * storage all throw on touch, and an exception here would replace the app's
+ * real error. On any failure the field is simply omitted (null).
+ */
+export function readSessionId(): string | null {
+  try {
+    const store = window.sessionStorage;
+    let sid = store.getItem("flare_sid");
+    if (!sid) {
+      sid = crypto.randomUUID();
+      store.setItem("flare_sid", sid);
+    }
+    return sid;
+  } catch {
+    return null;
+  }
+}
+
 export function buildPayload(err: unknown, context: Record<string, unknown> = {}): FlarePayload {
   const { kind, url, ...rest } = context;
   const error = err instanceof Error ? err : new Error(typeof err === "string" ? err : "Unknown error");
@@ -108,6 +131,7 @@ export function buildPayload(err: unknown, context: Record<string, unknown> = {}
     environment: "production",
     occurredAt: Date.now(),
     context: boundContext({ ...rest, ...errorDetail(error) }),
+    sessionId: readSessionId(),
   };
 }
 

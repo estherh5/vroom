@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { boundContext, buildPayload, errorDetail } from "./flare";
 
 /**
@@ -126,5 +126,33 @@ describe("an error's own diagnosis reaches the payload", () => {
     // And `boundContext` is what decided that, not `errorDetail`.
     expect(errorDetail(huge)._params).toBeDefined();
     expect(boundContext({ ok: 1 })).toEqual({ ok: 1 });
+  });
+});
+
+describe("a per-tab session id rides on the payload", () => {
+  const SHAPE = /^[A-Za-z0-9_-]{8,64}$/;
+  const store = () => {
+    const m = new Map<string, string>();
+    return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v) };
+  };
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("mints an ingest-valid id once per tab and reuses it", () => {
+    vi.stubGlobal("window", { sessionStorage: store() });
+    const a = buildPayload(new Error("a")).sessionId;
+    const b = buildPayload(new Error("b")).sessionId;
+    expect(a).toMatch(SHAPE);
+    expect(b).toBe(a);
+  });
+
+  it("omits it (null) when storage throws, and still builds the payload", () => {
+    vi.stubGlobal("window", {
+      get sessionStorage() {
+        throw new Error("blocked");
+      },
+    });
+    const p = buildPayload(new Error("boom"));
+    expect(p.sessionId).toBeNull();
+    expect(p.message).toBe("boom");
   });
 });
