@@ -44,9 +44,13 @@ export default function LocationInput({
           Loading place search…
         </p>
       ) : (
+        <>
+        {/* Geosuggest's own label points at its wrapper, not the input. */}
+        <label className="visually-hidden-label" htmlFor="geosuggest__input--location-input">
+          Pick-up location
+        </label>
         <Geosuggest
           id="location-input"
-          label="Pick-up location"
           initialValue={location ? location.label : ""}
           placeholder="Pick up at..."
           autoComplete="off"
@@ -55,6 +59,7 @@ export default function LocationInput({
           disabled={disabled}
           onSuggestSelect={handleSuggestSelect}
         />
+        </>
       )}
     </div>
   );

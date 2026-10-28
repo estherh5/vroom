@@ -14,8 +14,12 @@ export default function ConfirmButton({ busy, retry, confirmBooking }: Props) {
       type="button"
       className="d-flex align-items-center confirm"
       aria-busy={busy}
-      disabled={busy}
-      onClick={confirmBooking}
+      // aria-disabled, not disabled: disabling the focused button would drop
+      // keyboard focus to the page while the booking is in flight.
+      aria-disabled={busy}
+      onClick={() => {
+        if (!busy) confirmBooking();
+      }}
     >
       {busy ? (
         <>

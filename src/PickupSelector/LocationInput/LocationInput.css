@@ -69,7 +69,7 @@
 
 /* Geosuggest renders the label beside its input; it names the field for
    screen readers while the placeholder and marker icon carry it visually. */
-.geosuggest label {
+.visually-hidden-label {
   position: absolute;
   width: 1px;
   height: 1px;

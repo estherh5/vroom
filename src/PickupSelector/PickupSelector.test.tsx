@@ -30,7 +30,7 @@ describe("PickupSelector", () => {
   it("marks Find cars busy and locks the inputs during the search", () => {
     renderPickup("busy");
     const button = screen.getByRole("button", { name: "Find cars…" });
-    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
     expect(button).toHaveAttribute("aria-busy", "true");
     expect(screen.getByRole("button", { name: "1/1/2099–1/4/2099" })).toBeDisabled();
   });

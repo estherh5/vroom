@@ -46,9 +46,16 @@
 
 /* Match the calendar's accent color to the app's orange theme; days and the
    month arrows meet the 44px tap floor. */
-.rdp-root {
+/* Scoped under the popover so these beat react-day-picker's own .rdp-root
+   defaults, which load after this file. */
+.date-range-popover .rdp-root {
   --rdp-accent-color: #ffa500;
   --rdp-accent-background-color: #fff3e0;
+  /* Today in the deep orange: the accent #ffa500 is 2:1 on white. */
+  --rdp-today-color: #a35a00;
+  /* Black on the orange range ends: white on #ffa500 is 2:1. */
+  --rdp-range_start-color: #000000;
+  --rdp-range_end-color: #000000;
   --rdp-day-width: 46px;
   --rdp-day-height: 46px;
   --rdp-day_button-width: 44px;

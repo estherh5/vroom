@@ -22,8 +22,10 @@ body {
 }
 
 /* One keyboard focus ring for every control: black, which holds 3:1 on the
-   app's white, orange, pink, yellow and green surfaces alike. */
-:focus-visible {
+   app's white, orange, pink, yellow and green surfaces alike. The :root
+   prefix outranks Bootstrap's and react-day-picker's `button:focus` rings
+   (a `:root` prefix is stripped by the minifier). */
+html :focus-visible {
   outline: 3px solid #000000;
   outline-offset: 3px;
 }

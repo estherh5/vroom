@@ -47,7 +47,7 @@ describe("BookingConfirm", () => {
   it("marks the Confirm button itself busy while the booking is in flight", () => {
     renderConfirm("busy");
     const button = screen.getByRole("button", { name: "Confirming…" });
-    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
     expect(button).toHaveAttribute("aria-busy", "true");
   });
 

@@ -39,6 +39,7 @@ interface Props {
   image: string;
   type: string;
   price: number;
+  distance: number;
   // Null renders a read-only summary (the confirm step).
   selectCar: ((id: string) => void) | null;
   // Roving tabindex: the one row of the group that takes Tab focus.
@@ -59,6 +60,7 @@ export default function CarRow({
   image,
   type,
   price,
+  distance,
   selectCar,
   tabbable = false,
   onArrow,
@@ -141,6 +143,8 @@ export default function CarRow({
             {address.name}
             <br />
             {address.address}
+            <br />
+            <span className="distance">{distance} mi away</span>
           </div>
         </div>
       </div>

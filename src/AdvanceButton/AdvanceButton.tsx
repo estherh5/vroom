@@ -26,8 +26,12 @@ export default function AdvanceButton({
         className={"d-flex advance" + (showLabel ? " advance--labeled" : "")}
         aria-label={showLabel ? undefined : busy ? `${label}…` : label}
         aria-busy={busy}
-        disabled={disabled || busy}
-        onClick={advanceSection}
+        // Busy is aria-disabled, not disabled, so keyboard focus stays here.
+        aria-disabled={busy}
+        disabled={disabled}
+        onClick={() => {
+          if (!busy) advanceSection();
+        }}
       >
         {showLabel && <span>{label}</span>}
         <i

@@ -49,7 +49,7 @@ export default function BookingConfirm({
     <div className="row no-gutters w-100 align-items-center justify-content-center confirm-container">
       <div className="d-flex flex-column align-items-center confirm-review-container">
         <h1 ref={headingRef} tabIndex={-1} className="step-heading">
-          {status === "done" ? "Booked" : "Review your car"}
+          Review your car
         </h1>
 
         <InfoHeader
@@ -70,13 +70,12 @@ export default function BookingConfirm({
               image={selectedCar.image}
               type={selectedCar.type}
               price={selectedCar.price}
+              distance={selectedCar.distance}
               selectCar={null}
             />
         </div>
 
-        <PickupMap from={location.placeId} to={selectedCar.address} />
-
-        <div className="my-5 d-flex flex-column align-items-center booking-outcome">
+        <div className="my-4 d-flex flex-column align-items-center booking-outcome">
           {status === "done" ? (
             <div className="booking-done" role="status">
               <h2 ref={doneRef} tabIndex={-1}>
@@ -107,6 +106,8 @@ export default function BookingConfirm({
             </>
           )}
         </div>
+
+        <PickupMap from={location.placeId} to={selectedCar.address} />
       </div>
     </div>
   );

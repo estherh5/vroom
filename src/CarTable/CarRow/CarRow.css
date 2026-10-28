@@ -57,7 +57,11 @@
 }
 
 .address-row {
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.address-row .distance {
+  font-weight: 600;
 }
 
 .car-logo {

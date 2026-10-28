@@ -126,6 +126,7 @@ export default function CarTable({
                   image={car.image}
                   type={car.type}
                   price={car.price}
+                  distance={car.distance}
                   selectCar={handleSelectCar}
                   tabbable={index === tabbableIndex}
                   onArrow={(direction) => moveFocus(index, direction)}

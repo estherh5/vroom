@@ -67,6 +67,12 @@ export default function App() {
 
   // Set the clicked page header button as selected.
   const setSelectedButton = (buttonName: SectionName) => {
+    // A finished booking is left only through Book another car, so its
+    // confirmation code can't vanish behind a step change.
+    if (bookingStatus === "done") {
+      return;
+    }
+
     const updatedButtons = structuredClone(buttons);
     const selectedIndex = updatedButtons.findIndex(
       (button) => button.name === buttonName,
@@ -213,13 +219,22 @@ export default function App() {
   const selectedCar = cars?.find((car) => car.selected);
 
   useEffect(() => {
-    document.title = SECTION_TITLES[selectedButton?.name ?? "pickup"];
-  }, [selectedButton?.name]);
+    document.title =
+      bookingStatus === "done"
+        ? "Booked · Vroom"
+        : SECTION_TITLES[selectedButton?.name ?? "pickup"];
+  }, [selectedButton?.name, bookingStatus]);
+
+  // After a booking every step but the current one is locked.
+  const headerButtons =
+    bookingStatus === "done"
+      ? buttons.map((button) => ({ ...button, disabled: !button.selected }))
+      : buttons;
 
   return (
     <div className="container-fluid p-0">
       <PageHeader
-        buttons={buttons}
+        buttons={headerButtons}
         onSelectButton={setSelectedButton}
         menu={
           <FleetMenu

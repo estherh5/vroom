@@ -20,7 +20,7 @@
   background-color: #b9ffbc;
 }
 
-.confirm:disabled {
+.confirm[aria-disabled="true"] {
   border-color: #50ff58;
   box-shadow: none;
   background-color: #b9ffbc;
