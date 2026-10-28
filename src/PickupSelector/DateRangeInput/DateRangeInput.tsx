@@ -21,10 +21,20 @@ export default function DateRangeInput({
   disabled,
 }: Props) {
   const [open, setOpen] = useState(false);
-  // Show one month on small screens, two otherwise.
+  // A phone gets one month in a bottom sheet; wider screens two months side
+  // by side in a popover.
   const mobile = useMediaQuery("(max-width: 620px)");
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // On a short window the popover can open below the fold; scroll the
+  // pickup page just far enough to show all of it.
+  useEffect(() => {
+    if (open && !mobile) {
+      popoverRef.current?.scrollIntoView({ block: "nearest" });
+    }
+  }, [open, mobile]);
 
   // Close the calendar when the user clicks outside of it.
   useEffect(() => {
@@ -91,15 +101,39 @@ export default function DateRangeInput({
         {label}
       </button>
 
+      {open && mobile && (
+        <div
+          className="date-range-scrim"
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+        ></div>
+      )}
+
       {open && (
-        <div className="date-range-popover" role="dialog" aria-label="Choose dates">
-          <p className="date-range-hint" aria-live="polite">
-            {startDate && !endDate ? "Now pick your drop-off day" : "Pick your pick-up day"}
-          </p>
+        <div ref={popoverRef} className="date-range-popover" role="dialog" aria-label="Choose dates">
+          <div className="date-range-head">
+            <p className="date-range-hint" aria-live="polite">
+              {startDate && !endDate ? "Now pick your drop-off day" : "Pick your pick-up day"}
+            </p>
+            {mobile && (
+              <button
+                type="button"
+                className="date-range-close"
+                aria-label="Close calendar"
+                onClick={() => {
+                  setOpen(false);
+                  buttonRef.current?.focus();
+                }}
+              >
+                <i aria-hidden="true" className="fas fa-times"></i>
+              </button>
+            )}
+          </div>
           <DayPicker
             mode="range"
             resetOnSelect
             numberOfMonths={mobile ? 1 : 2}
+            defaultMonth={startDate ?? undefined}
             disabled={{ before: startOfToday() }}
             selected={selected}
             onSelect={handleSelect}

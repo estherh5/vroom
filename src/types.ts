@@ -12,7 +12,7 @@ export interface SectionButtonData {
   disabled: boolean;
 }
 
-// A pickup location, as produced by react-geosuggest's onSuggestSelect.
+// A pickup location: a city chosen from Google Places suggestions.
 export interface GeoLocation {
   label: string;
   placeId: string;

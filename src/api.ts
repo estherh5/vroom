@@ -13,7 +13,6 @@ const REQUEST_TIMEOUT_MS = 20_000;
 const MAX_RESULTS = 20;
 const DAY_IN_MS = 86_400_000;
 const PRICELINE = "https://www.priceline.com/rc-static/vehicles/domestic_196x116";
-const DEMO_COMPANY_LOGO = "/favicon.ico";
 
 interface DemoCarTemplate {
   group: string;
@@ -160,7 +159,8 @@ function searchDemoCars(
       type: template.type,
       selected: false,
       image: `${PRICELINE}/${template.group}.png`,
-      companyLogo: DEMO_COMPANY_LOGO,
+      // Demo companies have no logos; the row names them in text.
+      companyLogo: "",
       group: template.group,
       company: template.company,
       distance: Number(distance.toFixed(1)),

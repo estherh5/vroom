@@ -6,6 +6,10 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10 — The trip lives in the URL.** Place, dates, step and chosen car are in the query string (`src/lib/tripUrl.ts`): a refresh resumes the step (it searches again first), browser Back and Forward walk the steps, and Back to Rentals keeps the chosen car.
+- **2026-10 — Calendar fits the screen.** Two months side by side on wide screens, scrolled fully into view when opened; on a phone one month in a bottom sheet over a dimmed page, with a close button. It opens on the picked start month.
+- **2026-10 — Place search on Places API (New).** A hand-built city combobox (`src/PickupSelector/LocationInput/LocationInput.tsx`, `src/lib/maps.ts`) replaces `react-geosuggest` and the legacy `AutocompleteService`/`PlacesService`; picking a city fetches its location from the place itself, so the Geocoding console error is gone. Places API (New) is enabled on the Vroom Google project and allowed on its browser key, whose local-dev referrers are now `localhost:3000` / `127.0.0.1:3000` (the old `:*` forms were invalid).
+- **2026-10 — Company names, not a stand-in logo.** A car with no real company logo names the company in text instead of showing the Vroom mark.
 - **2026-10 — Whole-app critique fixes, impeccable 26/40, 2026-10-27** (first run 20/40). Cars are a keyboard radio group with a ring + check for the chosen one; one focus ring app-wide; Find cars and Confirm show a busy state on the button, failures explain themselves in place with Try again, requests time out at 20s; the booking modal is gone, a booking ends on the Confirm page with the code and Book another car, and the steps lock until then; date range starts empty, no past days, closes on the second pick or Esc; named steps, an h1 per step, per-step tab titles; contrast fixes; backgrounds 13MB PNG to 0.67MB WebP; no sideways scroll, Rentals is one column with a sticky labeled Review booking.
 - **2026-10 — Fleet apps + account menu and footer.** The old fixed top-left site menu is gone; the fleet kit's apps menu sits at the trailing end of the section header, listing every live app from `crystalprism.io/apps.json` (baked fallback on failure), with no account rows since vroom has no sign-in. `FleetFooter` replaces the inline copyright, over a soft white fade so it reads on the photo. Kit copied byte-identical into `src/components` + `src/lib`; tokens in `src/index.css`.
 - 2026-10 Flare reports now carry a wrapped error's `params` and its `cause` chain (`errorDetail` in `src/lib/flare.ts`, ported from the Next template), with the template's six cases in `src/lib/flare.test.ts`.
@@ -21,11 +25,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 - 2026-06 Moved to Vite + TypeScript and current dependency versions.
 
 ## Next
-
-- **Keep the trip in the URL.** A refresh or browser Back mid-booking loses the place, dates and chosen car (`src/App.tsx` holds all of it in state). Put the step and inputs in the query string so Back walks the steps and a refresh resumes. P2 from the 2026-10-27 whole-app critique.
-- **Calendar fits the screen.** The two-month `DayPicker` popover in `src/PickupSelector/DateRangeInput/DateRangeInput.tsx` runs past the fold at 1440 and 390; lay the months side by side on wide screens and make it a bottom sheet on a phone. P3 from the same critique.
-- **Migrate place search off the legacy Places services.** `react-geosuggest` uses `AutocompleteService`/`PlacesService`, closed to new Google customers since 2025-03; the Maps key is also not authorized for the Geocoding service (console error on every pick). `src/PickupSelector/LocationInput/LocationInput.tsx`. P3.
-- **Real company logos or none.** Every demo car falls back to the Vroom mark (`CarRow` `updateLogoImage`), so the six companies look identical; show the company name as text when there is no real logo. P3.
 
 ## Declined
 

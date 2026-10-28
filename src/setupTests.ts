@@ -17,6 +17,9 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
+// jsdom does not lay out, so it has no scrollIntoView either.
+Element.prototype.scrollIntoView = vi.fn();
+
 /**
  * The real network is out of bounds under test, by default.
  *

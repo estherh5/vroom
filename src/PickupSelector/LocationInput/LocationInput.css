@@ -1,26 +1,22 @@
-.geosuggest {
+.place-suggest {
+  position: relative;
   width: 100%;
 }
 
-.geosuggest__input {
+.place-suggest__input {
   padding: 10px 10px 10px 0px;
   text-indent: 10px;
 }
 
-.geosuggest__suggests-wrapper {
-  position: relative;
-}
-
-.geosuggest__suggests {
+.place-suggest__list {
   position: absolute;
   max-height: 25em;
   top: 100%;
   left: 0px;
   right: 0px;
   padding: 0px;
-  border-top-width: 0px;
-  margin-top: 8px;
-  box-shadow: 2px 2px 1px -1px #000000;
+  margin: 8px 0 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   background-color: #ffa500;
   overflow-x: hidden;
   overflow-y: auto;
@@ -28,47 +24,41 @@
   z-index: 5;
 }
 
-.geosuggest__suggests--hidden {
-  max-height: 0px;
-  overflow: hidden;
-  border-width: 0px;
+.place-suggest__list[hidden] {
+  display: none;
 }
 
-.geosuggest__item {
+.place-suggest__item,
+.place-suggest__problem {
   min-height: 44px;
   display: flex;
   align-items: center;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 1rem;
   padding: 0.5em 0.65em;
+  color: #000000;
+}
+
+.place-suggest__item {
   cursor: pointer;
 }
 
-.geosuggest__item:hover, .geosuggest__item:focus {
-  background-color: #f5f5f5;
+.place-suggest__item--active {
+  background-color: #ffffff;
 }
 
-.geosuggest__item--active {
-  background-color: #267dc0;
-  color: #ffffff;
+.place-suggest__match {
+  font-weight: 700;
 }
-
-.geosuggest__item--active:hover, .geosuggest__item--active:focus {
-  background-color: #cccccc;
-}
-
-.geosuggest__item__matched-text {
-  font-weight: bold;
-}
-
 
 @media only screen and (min-width: 960px) {
-  .geosuggest__input {
+  .place-suggest__input {
     width: 35vw;
   }
 }
 
-/* Geosuggest renders the label beside its input; it names the field for
-   screen readers while the placeholder and marker icon carry it visually. */
+/* Names the field for screen readers while the placeholder and marker icon
+   carry it visually. */
 .visually-hidden-label {
   position: absolute;
   width: 1px;

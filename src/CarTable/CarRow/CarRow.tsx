@@ -1,7 +1,6 @@
-import type { KeyboardEvent, SyntheticEvent } from "react";
+import { useState, type KeyboardEvent, type SyntheticEvent } from "react";
 import "./CarRow.css";
 
-import logo from "../../logo.png";
 import type { CarAddress } from "../../types";
 
 // Backup car images keyed by the first character of the ACRISS code, used
@@ -70,10 +69,10 @@ export default function CarRow({
     event.currentTarget.src = CAR_IMAGES[group.charAt(0)];
   };
 
-  // Fall back to the Vroom logo if the company logo is not found.
-  const updateLogoImage = (event: SyntheticEvent<HTMLImageElement>) => {
-    event.currentTarget.src = logo;
-  };
+  // With no real logo the company is named in text: a shared fallback mark
+  // made every company look the same.
+  const [logoFailed, setLogoFailed] = useState(false);
+  const showLogo = Boolean(companyLogo) && !logoFailed;
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === " " || event.key === "Enter") {
@@ -157,12 +156,16 @@ export default function CarRow({
           alt={type}
         />
 
-        <img
-          className="company-logo"
-          onError={updateLogoImage}
-          src={companyLogo}
-          alt={company}
-        />
+        {showLogo ? (
+          <img
+            className="company-logo"
+            onError={() => setLogoFailed(true)}
+            src={companyLogo}
+            alt={company}
+          />
+        ) : (
+          <div className="company-name">{company}</div>
+        )}
       </div>
     </div>
   );

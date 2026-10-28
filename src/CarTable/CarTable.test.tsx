@@ -87,3 +87,11 @@ describe("CarTable choice", () => {
     expect(screen.getByRole("button", { name: "Review booking" })).toBeEnabled();
   });
 });
+
+describe("CarRow company", () => {
+  it("names the company in text when there is no logo", () => {
+    renderTable(vi.fn(), cars.slice(0, 1));
+    expect(screen.getByText("Hertz", { selector: ".company-name" })).toBeInTheDocument();
+    expect(screen.queryByRole("img", { name: "Hertz" })).toBeNull();
+  });
+});

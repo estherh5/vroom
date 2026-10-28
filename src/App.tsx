@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import "./App.css";
 
@@ -7,6 +7,7 @@ import BookingConfirm from "./BookingConfirm/BookingConfirm";
 import CarTable from "./CarTable/CarTable";
 import { FleetMenu } from "./components/FleetMenu";
 import { getFleetApps, shapeFleet } from "./lib/fleet";
+import { readTrip, writeTrip } from "./lib/tripUrl";
 import PageHeader from "./PageHeader/PageHeader";
 import PickupSelector from "./PickupSelector/PickupSelector";
 import type {
@@ -18,11 +19,22 @@ import type {
   SortOption,
 } from "./types";
 
-const INITIAL_BUTTONS: SectionButtonData[] = [
-  { name: "pickup", icon: "far fa-calendar-alt", bgColor: "#f9c0c0", color: "#ff4f4f", selected: true, disabled: false },
-  { name: "rentals", icon: "fas fa-car", bgColor: "#fdf59b", color: "#ffeb00", selected: false, disabled: true },
-  { name: "confirm", icon: "fas fa-check", bgColor: "#afffb3", color: "#66ff6d", selected: false, disabled: true },
+const SECTIONS: Omit<SectionButtonData, "selected" | "disabled">[] = [
+  { name: "pickup", icon: "far fa-calendar-alt", bgColor: "#f9c0c0", color: "#ff4f4f" },
+  { name: "rentals", icon: "fas fa-car", bgColor: "#fdf59b", color: "#ffeb00" },
+  { name: "confirm", icon: "fas fa-check", bgColor: "#afffb3", color: "#66ff6d" },
 ];
+
+// Header buttons for the open step: later steps are disabled so the user
+// can't skip ahead, and after a booking every step but the open one is.
+function buttonsFor(step: SectionName, locked: boolean): SectionButtonData[] {
+  const openIndex = SECTIONS.findIndex((section) => section.name === step);
+  return SECTIONS.map((section, index) => ({
+    ...section,
+    selected: index === openIndex,
+    disabled: locked ? index !== openIndex : index > openIndex,
+  }));
+}
 
 // Each section's title, shown in the browser tab while it is open.
 const SECTION_TITLES: Record<SectionName, string> = {
@@ -38,16 +50,19 @@ export type BookingStatus = RequestStatus | "done";
 
 // Main application component.
 export default function App() {
-  const [buttons, setButtons] = useState<SectionButtonData[]>(
-    structuredClone(INITIAL_BUTTONS),
-  );
+  // The trip lives in the query string, so a refresh resumes it and browser
+  // Back walks the steps. A link into a later step searches again first.
+  const [initialTrip] = useState(() => readTrip(window.location.search));
+  const [step, setStep] = useState<SectionName>("pickup");
   // No range until the user picks one: a preset start of today made every
   // later click move only the end, so a trip starting later was unreachable.
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [location, setLocation] = useState<GeoLocation | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(initialTrip.startDate);
+  const [endDate, setEndDate] = useState<Date | null>(initialTrip.endDate);
+  const [location, setLocation] = useState<GeoLocation | null>(initialTrip.location);
   const [cars, setCars] = useState<Car[] | null>(null);
-  const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>(
+    initialTrip.step === "pickup" ? "idle" : "busy",
+  );
   const [bookingStatus, setBookingStatus] = useState<BookingStatus>("idle");
   const [confirmationCode, setConfirmationCode] = useState<string | null>(null);
   // Vroom has no account, so the fleet menu is apps only. The baked list
@@ -65,33 +80,31 @@ export default function App() {
     };
   }, []);
 
-  // Set the clicked page header button as selected.
-  const setSelectedButton = (buttonName: SectionName) => {
+  // The step the address bar shows. A step change the user makes adds a
+  // history entry; one that comes from history, or input edits, replace it.
+  const urlStep = useRef<SectionName>(initialTrip.step);
+  // Off until the link's own search settles, so the URL isn't rewritten to
+  // pickup while it runs.
+  const [urlReady, setUrlReady] = useState(initialTrip.step === "pickup");
+  const carsRef = useRef<Car[] | null>(null);
+  carsRef.current = cars;
+
+  // Open the step the header button names.
+  const goToStep = (name: SectionName) => {
     // A finished booking is left only through Book another car, so its
     // confirmation code can't vanish behind a step change.
     if (bookingStatus === "done") {
       return;
     }
 
-    const updatedButtons = structuredClone(buttons);
-    const selectedIndex = updatedButtons.findIndex(
-      (button) => button.name === buttonName,
-    );
-
-    updatedButtons.forEach((button, index) => {
-      button.selected = index === selectedIndex;
-      // Disable sections after the selected one so the user can't skip ahead.
-      button.disabled = index > selectedIndex;
-    });
-
     // Reset pickup/booking state when toggling to an earlier section.
-    if (selectedIndex < 2) {
+    if (name !== "confirm") {
       setSearchStatus("idle");
       setBookingStatus("idle");
       setConfirmationCode(null);
     }
 
-    setButtons(updatedButtons);
+    setStep(name);
   };
 
   const setDates = (start: Date | null, end: Date | null) => {
@@ -106,29 +119,59 @@ export default function App() {
     setSearchStatus("idle");
   };
 
-  // Fetch rental cars and, on success, advance to the rentals section.
-  const getCars = async (updatedButtons: SectionButtonData[]) => {
-    if (!location || !startDate || !endDate) {
+  // Fetch rental cars and, on success, open the rentals section, or the
+  // confirm section when a car from the URL is among the results. A search
+  // restoring a URL (fromHistory) replaces its entry instead of adding one.
+  const getCars = async (
+    place: GeoLocation | null,
+    start: Date | null,
+    end: Date | null,
+    carId: string | null = null,
+    fromHistory = false,
+  ) => {
+    const open = (opened: SectionName) => {
+      if (fromHistory) {
+        urlStep.current = opened;
+      }
+      setStep(opened);
+    };
+
+    if (!place || !start || !end) {
+      open("pickup");
       return;
     }
 
     setSearchStatus("busy");
 
     try {
-      const results = await searchCars(location, startDate, endDate);
+      const results = await searchCars(place, start, end);
 
       if (results.length === 0) {
         setSearchStatus("empty");
+        open("pickup");
         return;
       }
 
-      setCars(results);
-      setButtons(updatedButtons);
+      const found = results.some((car) => car.id === carId);
+      setCars(results.map((car) => ({ ...car, selected: found && car.id === carId })));
       setSearchStatus("idle");
+      open(found ? "confirm" : "rentals");
     } catch {
       setSearchStatus("failed");
+      open("pickup");
     }
   };
+
+  // A link or refresh into a later step searches again, then resumes there.
+  useEffect(() => {
+    if (initialTrip.step === "pickup") {
+      return;
+    }
+    const { location: place, startDate: start, endDate: end, carId } = initialTrip;
+    void getCars(place, start, end, carId, true).then(() => setUrlReady(true));
+    // Runs once, for the URL the page loaded with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setSort = (option: SortOption) => {
     if (!cars) {
@@ -163,20 +206,13 @@ export default function App() {
 
   // Advance to the next section when the user clicks the Advance button.
   const advanceSection = () => {
-    const updatedButtons = structuredClone(buttons);
-    const selectedIndex = updatedButtons.findIndex((button) => button.selected);
-
-    updatedButtons[selectedIndex].selected = false;
-    updatedButtons[selectedIndex + 1].selected = true;
-    updatedButtons[selectedIndex + 1].disabled = false;
-
     // Fetch rental cars when advancing from the pickup section.
-    if (selectedIndex === 0) {
-      void getCars(updatedButtons);
+    if (step === "pickup") {
+      void getCars(location, startDate, endDate);
       return;
     }
 
-    setButtons(updatedButtons);
+    setStep("confirm");
   };
 
   // Post the booking to the back-end server.
@@ -212,30 +248,76 @@ export default function App() {
     setBookingStatus("idle");
     setConfirmationCode(null);
     setSearchStatus("idle");
-    setButtons(structuredClone(INITIAL_BUTTONS));
+    setStep("pickup");
   };
 
-  const selectedButton = buttons.find((button) => button.selected);
   const selectedCar = cars?.find((car) => car.selected);
+  const selectedCarId = selectedCar?.id ?? null;
+
+  // Mirror the trip into the address bar.
+  useEffect(() => {
+    if (!urlReady) {
+      return;
+    }
+    const search = writeTrip({ step, location, startDate, endDate, carId: selectedCarId });
+    const url = window.location.pathname + search + window.location.hash;
+    if (step !== urlStep.current) {
+      urlStep.current = step;
+      window.history.pushState(null, "", url);
+    } else if (search !== window.location.search) {
+      window.history.replaceState(null, "", url);
+    }
+  }, [urlReady, step, location, startDate, endDate, selectedCarId]);
+
+  // Back and Forward restore the trip their entry recorded. Leaving a
+  // finished booking this way clears it, like Book another car.
+  useEffect(() => {
+    const handlePopState = () => {
+      const trip = readTrip(window.location.search);
+      urlStep.current = trip.step;
+      setLocation(trip.location);
+      setStartDate(trip.startDate);
+      setEndDate(trip.endDate);
+      setSearchStatus("idle");
+      setBookingStatus("idle");
+      setConfirmationCode(null);
+
+      const known = carsRef.current;
+      if (trip.step === "pickup") {
+        setStep("pickup");
+      } else if (known) {
+        // Back to rentals keeps the car chosen there.
+        const carId = trip.carId ?? known.find((car) => car.selected)?.id;
+        const found = known.some((car) => car.id === carId);
+        setCars(known.map((car) => ({ ...car, selected: found && car.id === carId })));
+        setStep(found || trip.step === "rentals" ? trip.step : "rentals");
+        if (!found && trip.step === "confirm") {
+          urlStep.current = "rentals";
+        }
+      } else {
+        // Book another car cleared the results, so search again.
+        urlStep.current = "pickup";
+        setStep("pickup");
+        void getCars(trip.location, trip.startDate, trip.endDate, trip.carId, true);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   useEffect(() => {
     document.title =
-      bookingStatus === "done"
-        ? "Booked · Vroom"
-        : SECTION_TITLES[selectedButton?.name ?? "pickup"];
-  }, [selectedButton?.name, bookingStatus]);
+      bookingStatus === "done" ? "Booked · Vroom" : SECTION_TITLES[step];
+  }, [step, bookingStatus]);
 
-  // After a booking every step but the current one is locked.
-  const headerButtons =
-    bookingStatus === "done"
-      ? buttons.map((button) => ({ ...button, disabled: !button.selected }))
-      : buttons;
+  const headerButtons = buttonsFor(step, bookingStatus === "done");
 
   return (
     <div className="container-fluid p-0">
       <PageHeader
         buttons={headerButtons}
-        onSelectButton={setSelectedButton}
+        onSelectButton={goToStep}
         menu={
           <FleetMenu
             apps={fleetApps}
@@ -251,7 +333,7 @@ export default function App() {
       />
 
       <main className="row no-gutters align-items-start justify-content-center content-container">
-        {selectedButton?.name === "pickup" ? (
+        {step === "pickup" ? (
           <PickupSelector
             location={location}
             setLocation={changeLocation}
@@ -261,7 +343,7 @@ export default function App() {
             status={searchStatus}
             advanceSection={advanceSection}
           />
-        ) : selectedButton?.name === "rentals" && cars && location && startDate && endDate ? (
+        ) : step === "rentals" && cars && location && startDate && endDate ? (
           <CarTable
             location={location}
             startDate={startDate}
@@ -271,7 +353,7 @@ export default function App() {
             selectCar={selectCar}
             advanceSection={advanceSection}
           />
-        ) : selectedButton?.name === "confirm" &&
+        ) : step === "confirm" &&
           selectedCar &&
           location &&
           startDate &&

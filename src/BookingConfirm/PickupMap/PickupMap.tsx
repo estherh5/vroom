@@ -2,27 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import "./PickupMap.css";
 
 import { useScript } from "../../hooks/useScript";
+import { MAPS_SCRIPT } from "../../lib/maps";
 import type { CarAddress } from "../../types";
-
-const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_KEY;
-const MAPS_SCRIPT = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_KEY}&libraries=places`;
-
-type GoogleMap = object;
-
-interface GoogleMapsApi {
-  maps: {
-    Map: new (
-      element: HTMLElement,
-      options: Record<string, unknown>,
-    ) => GoogleMap;
-  };
-}
-
-declare global {
-  interface Window {
-    google?: GoogleMapsApi;
-  }
-}
 
 interface Props {
   from: string;

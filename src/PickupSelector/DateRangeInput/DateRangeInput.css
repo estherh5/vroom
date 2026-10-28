@@ -28,12 +28,24 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
+  /* Without max-content the popover shrink-wraps to the narrow date button
+     and the two months stack, running past the fold. */
+  width: max-content;
   max-width: calc(100vw - 16px);
+  /* Scrolled into view clear of the footer, which covers the last 60px. */
+  scroll-margin-bottom: 72px;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   padding: 0.5rem;
+}
+
+.date-range-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .date-range-hint {
@@ -62,4 +74,65 @@
   --rdp-day_button-height: 44px;
   --rdp-nav_button-width: 44px;
   --rdp-nav_button-height: 44px;
+}
+
+/* On a phone the calendar is a bottom sheet over a dimmed page, so the whole
+   month sits in reach of a thumb instead of hanging off the date bar. */
+@media (max-width: 620px) {
+  .date-range-scrim {
+    position: fixed;
+    inset: 0;
+    /* Over Bootstrap's fixed-top header (1030) and the fleet menu (1041). */
+    z-index: 1042;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .date-range-popover {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: none;
+    z-index: 1043;
+    border: none;
+    border-radius: 12px 12px 0 0;
+    padding: 0.75rem 0.5rem calc(1rem + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+    animation: date-sheet-in 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .date-range-popover .rdp-root {
+    display: flex;
+    justify-content: center;
+  }
+
+  .date-range-hint {
+    margin: 0 8px;
+  }
+}
+
+.date-range-close {
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-size: 20px;
+}
+
+@keyframes date-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .date-range-popover {
+    animation: none;
+  }
 }
