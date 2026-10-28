@@ -32,7 +32,7 @@ export default function PageHeader({ buttons, onSelectButton, menu }: Props) {
       className="row align-items-center w-100 fixed-top no-gutters header"
       style={style}
     >
-      <ul className="nav w-100">
+      <ul className="nav w-100" aria-label="Booking steps">
         <div className="liner"></div>
 
         {buttons.map((button) => (

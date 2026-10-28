@@ -1,13 +1,43 @@
 .car-row {
+  position: relative;
+  padding: 8px;
   box-shadow: 1px 1px 1px #000000;
   background-color: #ffffff;
   font-family: 'Source Sans Pro', sans-serif;
-  cursor: pointer;
-  opacity: 0.7;
 }
 
-.car-row:hover, .car-row.selected {
-  opacity: 1;
+/* Choosable rows: hover lifts, selection is a black ring plus a filled check,
+   so the chosen car never reads like a hovered one. */
+.car-row--choice {
+  padding-left: 48px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease-out;
+}
+
+.car-row--choice:hover {
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.35);
+}
+
+.car-row--choice.selected {
+  box-shadow: 0 0 0 4px #000000;
+}
+
+.car-check {
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  font-size: 22px;
+  color: #6b6b6b;
+}
+
+.car-row.selected .car-check {
+  color: #000000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .car-row--choice {
+    transition: none;
+  }
 }
 
 .car-name {
@@ -18,7 +48,7 @@
 .price-total-row {
   font-size: 24px;
   font-family: 'Racing Sans One', cursive;
-  color: #ffa500;
+  color: #a35a00;
 }
 
 .price-day-row {

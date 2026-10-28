@@ -1,21 +1,39 @@
+/* Bright green stays on the ring, the step's color; the label is a deep green
+   from the same hue so it reads (the old #66ff6d on #d7ffd9 was 1.2:1). */
 .confirm {
+  min-height: 52px;
+  gap: 10px;
+  padding: 6px 28px;
   border: 5px solid #66ff6d;
   border-radius: 25px;
   box-shadow: 1px 1px 1px #2c712f;
   background-color: #d7ffd9;
-  color: #66ff6d;
+  color: #1c6b21;
   font-size: 25px;
   user-select: none;
   cursor: pointer;
 }
 
-.confirm:focus, .confirm:hover, .confirm:active, .confirm:disabled {
+.confirm:hover, .confirm:active {
   border-color: #50ff58;
   box-shadow: none;
   background-color: #b9ffbc;
-  color: #50ff58;
 }
 
 .confirm:disabled {
-  cursor: not-allowed;
+  border-color: #50ff58;
+  box-shadow: none;
+  background-color: #b9ffbc;
+  cursor: progress;
+}
+
+.confirm-spinner {
+  font-size: 20px;
+  animation: vroom-spin 0.9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-spinner {
+    animation-duration: 2.4s;
+  }
 }

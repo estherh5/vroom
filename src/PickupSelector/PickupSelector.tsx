@@ -4,6 +4,7 @@ import "./PickupSelector.css";
 import AdvanceButton from "../AdvanceButton/AdvanceButton";
 import DateRangeInput from "./DateRangeInput/DateRangeInput";
 import LocationInput from "./LocationInput/LocationInput";
+import type { SearchStatus } from "../App";
 import type { GeoLocation } from "../types";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   startDate: Date | null;
   endDate: Date | null;
   setDates: (startDate: Date | null, endDate: Date | null) => void;
-  disabled: boolean;
+  status: SearchStatus;
   advanceSection: () => void;
 }
 
@@ -23,9 +24,10 @@ export default function PickupSelector({
   startDate,
   endDate,
   setDates,
-  disabled,
+  status,
   advanceSection,
 }: Props) {
+  const busy = status === "busy";
   const [allowAdvance, setAllowAdvance] = useState(false);
 
   // Enable the Advance button only once every input has a value.
@@ -34,29 +36,44 @@ export default function PickupSelector({
   }, [startDate, endDate, location]);
 
   return (
-    <div className="row flex-column no-gutters w-100 justify-content-start align-items-center pickup-container">
-      <div className="intro p-4 mx-5">
-        Welcome to <a href=".">Vroom</a>, a speedy rental car booking app
-      </div>
+    <div className="row flex-column flex-nowrap no-gutters w-100 justify-content-start align-items-center pickup-container">
+      <h1 className="intro p-4 mx-5">
+        Welcome to <span className="brand">Vroom</span>, a speedy rental car booking app
+      </h1>
 
       <div className="d-flex flex-wrap justify-content-center mx-5 pickup-input-container">
         <LocationInput
           location={location}
           setLocation={setLocation}
-          disabled={disabled}
+          disabled={busy}
         />
 
         <DateRangeInput
           startDate={startDate}
           endDate={endDate}
           setDates={setDates}
-          disabled={disabled}
+          disabled={busy}
         />
 
         <AdvanceButton
           disabled={!allowAdvance}
+          busy={busy}
+          label="Find cars"
           advanceSection={advanceSection}
         />
+      </div>
+
+      <div className="mx-5 search-outcome" role="alert">
+        {status === "failed" ? (
+          <>
+            <p>We couldn’t search for cars. Check your connection, then try again.</p>
+            <button type="button" className="search-retry" onClick={advanceSection}>
+              Try again
+            </button>
+          </>
+        ) : status === "empty" ? (
+          <p>No cars there for those dates. Try other dates or a nearby city.</p>
+        ) : null}
       </div>
     </div>
   );

@@ -42,4 +42,5 @@ export interface Car {
 
 export type SortOption = "price" | "distance" | "type";
 
-export type ServerStatus = "success" | "fail";
+// Progress of a network request started from a section.
+export type RequestStatus = "idle" | "busy" | "failed";

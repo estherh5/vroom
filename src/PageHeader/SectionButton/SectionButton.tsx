@@ -3,6 +3,13 @@ import "./SectionButton.css";
 
 import type { SectionName } from "../../types";
 
+// Each step's accessible name; the buttons show only an icon.
+const LABELS: Record<SectionName, string> = {
+  pickup: "Pick-up details",
+  rentals: "Choose a car",
+  confirm: "Confirm booking",
+};
+
 interface Props {
   name: SectionName;
   selected: boolean;
@@ -55,10 +62,12 @@ export default function SectionButton({
         className="d-flex justify-content-center align-items-center round"
         style={disabled ? disabledStyle : enabledStyle}
         data-name={name}
+        aria-label={LABELS[name]}
+        aria-current={selected ? "step" : undefined}
         disabled={disabled}
         onClick={selectButton}
       >
-        <i className={icon} data-name={name} onClick={selectButton}></i>
+        <i aria-hidden="true" className={icon}></i>
       </button>
     </li>
   );

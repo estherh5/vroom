@@ -21,6 +21,35 @@ body {
   height: 100%;
 }
 
+/* One keyboard focus ring for every control: black, which holds 3:1 on the
+   app's white, orange, pink, yellow and green surfaces alike. */
+:focus-visible {
+  outline: 3px solid #000000;
+  outline-offset: 3px;
+}
+
+/* A step heading takes focus when its step opens, for screen readers; the
+   ring would read as a stray box around plain text. */
+.step-heading:focus {
+  outline: none;
+}
+
+.step-heading {
+  margin: 0;
+  padding: 4px 10px;
+  background-color: #ffffff;
+  box-shadow: 1px 1px 1px #000000;
+  font-family: 'Racing Sans One', cursive;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+@keyframes vroom-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 a {
   color: #ffa200;
   text-decoration: none;

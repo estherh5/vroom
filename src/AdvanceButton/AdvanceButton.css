@@ -1,7 +1,10 @@
 .advance {
+  min-width: 52px;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
   border: none;
-  outline: none;
   background: none;
   font-size: 30px;
   cursor: pointer;
@@ -10,4 +13,30 @@
 .advance:disabled {
   color: #484848;
   cursor: not-allowed;
+}
+
+.advance[aria-busy="true"] {
+  color: #000000;
+  cursor: progress;
+}
+
+.advance-spinner {
+  animation: vroom-spin 0.9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .advance-spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+.advance--labeled {
+  gap: 10px;
+  padding: 6px 14px 6px 20px;
+  font-family: 'Racing Sans One', cursive;
+  font-size: 22px;
+}
+
+.advance--labeled i {
+  font-size: 24px;
 }

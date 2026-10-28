@@ -2,11 +2,13 @@
   position: relative;
 }
 
-/* Button that displays the selected date range and toggles the calendar. */
+/* Button that displays the selected date range and toggles the calendar.
+   Black on the orange bar: white on #ffa500 was 2:1. */
 .date-range-display {
+  min-height: 44px;
   border: none;
   background-color: #ffa500;
-  color: #ffffff;
+  color: #000000;
   font-size: 1rem;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
@@ -15,15 +17,18 @@
 
 .date-range-display:disabled {
   cursor: default;
-  opacity: 0.7;
+  font-style: italic;
+  color: #484848;
 }
 
 /* Pop-out calendar container. */
 .date-range-popover {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
+  max-width: calc(100vw - 16px);
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
@@ -31,8 +36,23 @@
   padding: 0.5rem;
 }
 
-/* Match the calendar's accent color to the app's orange theme. */
+.date-range-hint {
+  margin: 4px 8px 0;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000000;
+}
+
+/* Match the calendar's accent color to the app's orange theme; days and the
+   month arrows meet the 44px tap floor. */
 .rdp-root {
   --rdp-accent-color: #ffa500;
   --rdp-accent-background-color: #fff3e0;
+  --rdp-day-width: 46px;
+  --rdp-day-height: 46px;
+  --rdp-day_button-width: 44px;
+  --rdp-day_button-height: 44px;
+  --rdp-nav_button-width: 44px;
+  --rdp-nav_button-height: 44px;
 }

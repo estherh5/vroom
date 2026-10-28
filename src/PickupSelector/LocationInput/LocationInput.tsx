@@ -30,11 +30,23 @@ export default function LocationInput({
 
   return (
     <div className="d-flex align-items-center input-container">
-      <i className="fas fa-map-marker-alt p-2"></i>
+      <i aria-hidden="true" className="fas fa-map-marker-alt p-2"></i>
 
-      {status === "ready" && (
+      {status === "error" ? (
+        <p className="location-status" role="alert">
+          Place search didn’t load.
+          <button type="button" onClick={() => window.location.reload()}>
+            Reload
+          </button>
+        </p>
+      ) : status !== "ready" ? (
+        <p className="location-status" role="status">
+          Loading place search…
+        </p>
+      ) : (
         <Geosuggest
           id="location-input"
+          label="Pick-up location"
           initialValue={location ? location.label : ""}
           placeholder="Pick up at..."
           autoComplete="off"

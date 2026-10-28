@@ -1,5 +1,5 @@
 import { differenceInDays } from "date-fns";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./CarTable.css";
 
 import AdvanceButton from "../AdvanceButton/AdvanceButton";
@@ -39,6 +39,26 @@ export default function CarTable({
   );
 
   const [sort, setSortValue] = useState<SortOption>("price");
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  // Arriving here is a step change: put focus on the step's heading.
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
+  // The selected car takes Tab focus, or the first car before one is chosen.
+  const selectedIndex = cars.findIndex((car) => car.selected);
+  const tabbableIndex = selectedIndex === -1 ? 0 : selectedIndex;
+
+  // Arrow keys move focus between cars and select the one they land on, as a
+  // native radio group does.
+  const moveFocus = (from: number, direction: 1 | -1) => {
+    const next = (from + direction + cars.length) % cars.length;
+    handleSelectCar(cars[next].id);
+    const rows = groupRef.current?.querySelectorAll<HTMLElement>('[role="radio"]');
+    rows?.[next]?.focus();
+  };
 
   // Length of the rental period in days.
   const days = differenceInDays(endDate, startDate);
@@ -69,7 +89,11 @@ export default function CarTable({
         endDate={endDate}
       />
 
-      <div className="row no-gutters w-100 justify-content-end cars-table-container">
+      <div className="row no-gutters w-100 justify-content-between align-items-end cars-table-container">
+        <h1 ref={headingRef} tabIndex={-1} className="step-heading" id="choose-car">
+          Choose a car
+        </h1>
+
         <div className="sort-menu">
           <span className="sort-title">Sort by...</span>
 
@@ -83,9 +107,12 @@ export default function CarTable({
           />
         </div>
 
-        <div className="cars-table-wrapper">
-          <table className="cars-table">
-            <tbody>
+        <div
+          ref={groupRef}
+          role="radiogroup"
+          aria-labelledby="choose-car"
+          className="w-100 cars-list"
+        >
               {cars.map((car, index) => (
                 <CarRow
                   key={car.id + index}
@@ -100,14 +127,19 @@ export default function CarTable({
                   type={car.type}
                   price={car.price}
                   selectCar={handleSelectCar}
+                  tabbable={index === tabbableIndex}
+                  onArrow={(direction) => moveFocus(index, direction)}
                 />
               ))}
-            </tbody>
-          </table>
         </div>
       </div>
 
-      <AdvanceButton disabled={!allowAdvance} advanceSection={handleAdvance} />
+      <AdvanceButton
+        disabled={!allowAdvance}
+        label="Review booking"
+        showLabel
+        advanceSection={handleAdvance}
+      />
     </div>
   );
 }

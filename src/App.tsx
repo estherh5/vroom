@@ -7,15 +7,14 @@ import BookingConfirm from "./BookingConfirm/BookingConfirm";
 import CarTable from "./CarTable/CarTable";
 import { FleetMenu } from "./components/FleetMenu";
 import { getFleetApps, shapeFleet } from "./lib/fleet";
-import Modal from "./Modal/Modal";
 import PageHeader from "./PageHeader/PageHeader";
 import PickupSelector from "./PickupSelector/PickupSelector";
 import type {
   Car,
   GeoLocation,
+  RequestStatus,
   SectionButtonData,
   SectionName,
-  ServerStatus,
   SortOption,
 } from "./types";
 
@@ -25,28 +24,32 @@ const INITIAL_BUTTONS: SectionButtonData[] = [
   { name: "confirm", icon: "fas fa-check", bgColor: "#afffb3", color: "#66ff6d", selected: false, disabled: true },
 ];
 
-const REQUEST_ERROR =
-  "Your rental car request could not be processed. Try again soon.";
-const NO_CARS_ERROR =
-  "No cars found for your location and date range. Try different dates or " +
-  "a different location.";
-const BOOKING_ERROR =
-  "Your booking could not be confirmed. Try again soon.";
+// Each section's title, shown in the browser tab while it is open.
+const SECTION_TITLES: Record<SectionName, string> = {
+  pickup: "Vroom",
+  rentals: "Choose a car · Vroom",
+  confirm: "Confirm your car · Vroom",
+};
+
+// A search that returns no cars is its own outcome, not a failure: the fix is
+// different dates or a different place, not trying the same search again.
+export type SearchStatus = RequestStatus | "empty";
+export type BookingStatus = RequestStatus | "done";
 
 // Main application component.
 export default function App() {
   const [buttons, setButtons] = useState<SectionButtonData[]>(
     structuredClone(INITIAL_BUTTONS),
   );
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  // No range until the user picks one: a preset start of today made every
+  // later click move only the end, so a trip starting later was unreachable.
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [location, setLocation] = useState<GeoLocation | null>(null);
   const [cars, setCars] = useState<Car[] | null>(null);
-  const [displayModal, setDisplayModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState<string | null>(null);
-  const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null);
-  const [pickupSubmitted, setPickupSubmitted] = useState(false);
-  const [bookingSubmitted, setBookingSubmitted] = useState(false);
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
+  const [bookingStatus, setBookingStatus] = useState<BookingStatus>("idle");
+  const [confirmationCode, setConfirmationCode] = useState<string | null>(null);
   // Vroom has no account, so the fleet menu is apps only. The baked list
   // renders at once; crystalprism.io/apps.json replaces it when it arrives
   // (getFleetApps falls back to the same baked list on failure).
@@ -61,13 +64,6 @@ export default function App() {
       live = false;
     };
   }, []);
-
-  const showError = (message: string) => {
-    document.body.style.cursor = "default";
-    setDisplayModal(true);
-    setModalMessage(message);
-    setServerStatus("fail");
-  };
 
   // Set the clicked page header button as selected.
   const setSelectedButton = (buttonName: SectionName) => {
@@ -84,17 +80,24 @@ export default function App() {
 
     // Reset pickup/booking state when toggling to an earlier section.
     if (selectedIndex < 2) {
-      setPickupSubmitted(false);
-      setBookingSubmitted(false);
+      setSearchStatus("idle");
+      setBookingStatus("idle");
+      setConfirmationCode(null);
     }
 
-    document.body.style.cursor = "default";
     setButtons(updatedButtons);
   };
 
   const setDates = (start: Date | null, end: Date | null) => {
     setStartDate(start);
     setEndDate(end);
+    // An outcome message describes the last search, not the new inputs.
+    setSearchStatus("idle");
+  };
+
+  const changeLocation = (next: GeoLocation | null) => {
+    setLocation(next);
+    setSearchStatus("idle");
   };
 
   // Fetch rental cars and, on success, advance to the rentals section.
@@ -103,25 +106,21 @@ export default function App() {
       return;
     }
 
-    setPickupSubmitted(true);
+    setSearchStatus("busy");
 
     try {
       const results = await searchCars(location, startDate, endDate);
 
-      document.body.style.cursor = "default";
-
       if (results.length === 0) {
-        setPickupSubmitted(false);
-        showError(NO_CARS_ERROR);
+        setSearchStatus("empty");
         return;
       }
 
       setCars(results);
       setButtons(updatedButtons);
-      setPickupSubmitted(false);
+      setSearchStatus("idle");
     } catch {
-      setPickupSubmitted(false);
-      showError(REQUEST_ERROR);
+      setSearchStatus("failed");
     }
   };
 
@@ -171,7 +170,6 @@ export default function App() {
       return;
     }
 
-    document.body.style.cursor = "default";
     setButtons(updatedButtons);
   };
 
@@ -182,7 +180,7 @@ export default function App() {
       return;
     }
 
-    setBookingSubmitted(true);
+    setBookingStatus("busy");
 
     try {
       const confirmationCode = await createBooking({
@@ -195,31 +193,31 @@ export default function App() {
         start_date: format(startDate, "MM-dd-yyyy"),
       });
 
-      document.body.style.cursor = "default";
-      setDisplayModal(true);
-      setModalMessage(
-        `Booking confirmed! Your confirmation code is ${confirmationCode}.`,
-      );
-      setServerStatus("success");
-      setBookingSubmitted(true);
+      setConfirmationCode(confirmationCode);
+      setBookingStatus("done");
     } catch {
-      setBookingSubmitted(false);
-      showError(BOOKING_ERROR);
+      setBookingStatus("failed");
     }
+  };
+
+  // Start over from pickup after a booking, keeping the place and dates.
+  const bookAnother = () => {
+    setCars(null);
+    setBookingStatus("idle");
+    setConfirmationCode(null);
+    setSearchStatus("idle");
+    setButtons(structuredClone(INITIAL_BUTTONS));
   };
 
   const selectedButton = buttons.find((button) => button.selected);
   const selectedCar = cars?.find((car) => car.selected);
 
+  useEffect(() => {
+    document.title = SECTION_TITLES[selectedButton?.name ?? "pickup"];
+  }, [selectedButton?.name]);
+
   return (
     <div className="container-fluid p-0">
-      <Modal
-        display={displayModal}
-        message={modalMessage}
-        status={serverStatus}
-        onCloseModal={() => setDisplayModal(false)}
-      />
-
       <PageHeader
         buttons={buttons}
         onSelectButton={setSelectedButton}
@@ -237,15 +235,15 @@ export default function App() {
         }
       />
 
-      <div className="row align-items-start justify-content-center content-container">
+      <main className="row no-gutters align-items-start justify-content-center content-container">
         {selectedButton?.name === "pickup" ? (
           <PickupSelector
             location={location}
-            setLocation={setLocation}
+            setLocation={changeLocation}
             startDate={startDate}
             endDate={endDate}
             setDates={setDates}
-            disabled={pickupSubmitted}
+            status={searchStatus}
             advanceSection={advanceSection}
           />
         ) : selectedButton?.name === "rentals" && cars && location && startDate && endDate ? (
@@ -268,11 +266,13 @@ export default function App() {
             startDate={startDate}
             endDate={endDate}
             selectedCar={selectedCar}
-            disabled={bookingSubmitted}
+            status={bookingStatus}
+            confirmationCode={confirmationCode}
             confirmBooking={confirmBooking}
+            bookAnother={bookAnother}
           />
         ) : null}
-      </div>
+      </main>
     </div>
   );
 }

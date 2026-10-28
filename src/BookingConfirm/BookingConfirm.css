@@ -3,7 +3,7 @@
   height: 100%;
   padding-top: 80px;
   background-color: #b2ffb6;
-  background-image: url('../confirm-background.png');
+  background-image: url('../confirm-background.webp');
   background-position: center;
   background-size: cover;
   overflow: auto;
@@ -11,8 +11,10 @@
 
 .confirm-review-container {
   height: fit-content;
-  width: 80%;
+  width: 90%;
   max-width: 800px;
+  margin-bottom: 72px;
+  padding: 20px 16px 0;
   top: 0px;
   background-color: #ffffff8f;
 }
@@ -27,4 +29,75 @@
   .confirm-container {
     padding-top: 120px;
   }
+}
+
+.confirm-review-container .step-heading {
+  align-self: flex-start;
+}
+
+.booking-error {
+  max-width: 420px;
+  margin: 14px 0 0;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #9b1c1c;
+  text-align: center;
+}
+
+.booking-done {
+  width: 100%;
+  max-width: 460px;
+  padding: 24px 24px 28px;
+  border: 5px solid #66ff6d;
+  border-radius: 25px;
+  background-color: #ffffff;
+  font-family: 'Source Sans Pro', sans-serif;
+  text-align: center;
+}
+
+.booking-done h2 {
+  margin: 0 0 8px;
+  font-family: 'Racing Sans One', cursive;
+  font-size: 34px;
+  color: #1c6b21;
+}
+
+.booking-done p {
+  margin: 0;
+  font-size: 18px;
+}
+
+.booking-code-label {
+  margin-top: 18px !important;
+  font-size: 14px !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4a4a4a;
+}
+
+.booking-code {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 26px !important;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+
+.book-another {
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 0 24px;
+  border: 5px solid #66ff6d;
+  border-radius: 25px;
+  background-color: #d7ffd9;
+  color: #1c6b21;
+  font-family: 'Racing Sans One', cursive;
+  font-size: 20px;
+}
+
+.book-another:hover {
+  background-color: #b9ffbc;
 }

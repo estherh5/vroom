@@ -26,8 +26,6 @@
   overflow-y: auto;
   list-style: none;
   z-index: 5;
-  -webkit-transition: max-height 0.2s, border 0.2s;
-          transition: max-height 0.2s, border 0.2s;
 }
 
 .geosuggest__suggests--hidden {
@@ -37,6 +35,9 @@
 }
 
 .geosuggest__item {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
   font-size: 1rem;
   padding: 0.5em 0.65em;
   cursor: pointer;
@@ -64,4 +65,32 @@
   .geosuggest__input {
     width: 35vw;
   }
+}
+
+/* Geosuggest renders the label beside its input; it names the field for
+   screen readers while the placeholder and marker icon carry it visually. */
+.geosuggest label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.location-status {
+  margin: 0;
+  padding: 11px;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 17px;
+  color: #000000;
+}
+
+.location-status button {
+  min-height: 44px;
+  margin-left: 6px;
+  padding: 0 10px;
+  border: 2px solid #000000;
+  background: #ffffff;
+  font-weight: 600;
 }

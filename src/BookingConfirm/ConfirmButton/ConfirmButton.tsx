@@ -1,23 +1,32 @@
 import "./ConfirmButton.css";
 
 interface Props {
-  disabled: boolean;
+  busy: boolean;
+  // The last attempt failed, so the button retries it.
+  retry: boolean;
   confirmBooking: () => void;
 }
 
 // Confirm booking button.
-export default function ConfirmButton({ disabled, confirmBooking }: Props) {
-  const handleClick = () => {
-    // Set cursor style to loading.
-    document.body.style.cursor = "wait";
-    confirmBooking();
-  };
-
+export default function ConfirmButton({ busy, retry, confirmBooking }: Props) {
   return (
-    <div className="button-container my-5 d-flex align-items-center justify-content-center">
-      <button className="d-flex confirm" disabled={disabled} onClick={handleClick}>
-        Confirm
-      </button>
-    </div>
+    <button
+      type="button"
+      className="d-flex align-items-center confirm"
+      aria-busy={busy}
+      disabled={busy}
+      onClick={confirmBooking}
+    >
+      {busy ? (
+        <>
+          <i aria-hidden="true" className="fas fa-circle-notch confirm-spinner"></i>
+          Confirming…
+        </>
+      ) : retry ? (
+        "Try again"
+      ) : (
+        "Confirm"
+      )}
+    </button>
   );
 }

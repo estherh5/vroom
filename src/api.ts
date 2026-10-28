@@ -6,6 +6,9 @@ const RAPIDAPI_KEY = import.meta.env.VITE_RAPIDAPI_KEY;
 const RAPIDAPI_HOST = "booking-com15.p.rapidapi.com";
 const RENTAL_API_PROVIDER = import.meta.env.VITE_RENTAL_API_PROVIDER ?? "demo";
 const SERVER_PATH = import.meta.env.VITE_SERVER_PATH;
+// A stalled request ends in a visible failure with Retry instead of a button
+// that stays busy forever.
+const REQUEST_TIMEOUT_MS = 20_000;
 
 const MAX_RESULTS = 20;
 const DAY_IN_MS = 86_400_000;
@@ -208,6 +211,7 @@ export async function searchBookingCars(
         "X-RapidAPI-Key": RAPIDAPI_KEY,
         "X-RapidAPI-Host": RAPIDAPI_HOST,
       },
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     },
   );
 
@@ -269,6 +273,7 @@ export async function createBooking(payload: BookingPayload): Promise<string> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {

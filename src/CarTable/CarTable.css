@@ -2,25 +2,37 @@
   position: absolute;
   height: 100%;
   padding-top: 80px;
+  /* Clears the footer, which sits over the last 60px of every section. */
+  padding-bottom: 72px;
   background-color: #fff598;
-  background-image: url('../car-background.png');
+  background-image: url('../car-background.webp');
   background-position: center;
   background-size: cover;
-}
-
-.cars-table-container {
-  height: 85%;
-  width: 80%;
-  max-width: 800px;
-}
-
-.cars-table-wrapper {
-  height: 85%;
   overflow: auto;
 }
 
-.cars-table {
-  width: 100%;
+/* One column: trip details, then the list, then Review booking. As a
+   wrapping row, the details sat beside a narrow list on wide screens. */
+.cars-container.row {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start !important;
+}
+
+.cars-table-container {
+  width: 90%;
+  max-width: 800px;
+}
+
+.cars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 24px 0 8px;
+}
+
+.cars-container .step-heading {
+  margin: 0 0 0 4px;
 }
 
 .sort-menu {
@@ -28,8 +40,7 @@
   display: flex;
   align-items: center;
   padding: 0 0 0 7px;
-  margin-right: 36px;
-  margin-bottom: -10px;
+
   box-shadow: 1px 1px 1px #000000;
   background-color: #ffffff;
   font-family: 'Source Sans Pro', sans-serif;
@@ -44,9 +55,29 @@
   margin-left: 3px;
 }
 
+/* Review booking rides along the bottom of the list, above the footer, so
+   it is in reach right after a car is chosen however far down it was. */
+.cars-container .button-container {
+  justify-content: flex-end !important;
+  max-width: 800px;
+  position: sticky;
+  bottom: 64px;
+  width: 90%;
+  margin-top: 16px;
+  pointer-events: none;
+  z-index: 5;
+}
+
 .cars-container .advance {
-  top: 50%;
-  right: 5%;
+  border: 3px solid #000000;
+  border-radius: 999px;
+  background-color: #ffffff;
+  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+.cars-container .advance:disabled {
+  border-color: #6b6b6b;
 }
 
 
