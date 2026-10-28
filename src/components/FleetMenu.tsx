@@ -12,6 +12,8 @@ type Props = {
   apps: FleetEntry[];
   user: { email: string } | null;
   settingsHref: string | null;
+  // The Settings row's text, for an app whose only setting is one page (menagerie: "People & invites")
+  settingsLabel?: string;
   statsHref: string | null;
   signInHref: string | null;
   signOutAction: (() => void | Promise<void>) | null;
@@ -23,7 +25,7 @@ type Props = {
 
 const FOCUSABLE = "a[href],button:not([disabled])";
 
-export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, signOutAction, placement, triggerClassName }: Props) {
+export function FleetMenu({ apps, user, settingsHref, settingsLabel = "Settings", statsHref, signInHref, signOutAction, placement, triggerClassName }: Props) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<CSSProperties>({});
   const [signingOut, setSigningOut] = useState(false);
@@ -133,7 +135,7 @@ export function FleetMenu({ apps, user, settingsHref, statsHref, signInHref, sig
             {(user || statsHref || signInHref) && (
               <div className="fleet-account">
                 {who && <p className="fleet-email">{who}</p>}
-                {user && settingsHref && <a href={settingsHref} className="fleet-row">Settings</a>}
+                {user && settingsHref && <a href={settingsHref} className="fleet-row">{settingsLabel}</a>}
                 {statsHref && <a href={statsHref} className="fleet-row">Stats</a>}
                 {user && signOutAction && (
                   <button type="button" className="fleet-row" aria-disabled={signingOut || undefined} onClick={() => void signOut()}>

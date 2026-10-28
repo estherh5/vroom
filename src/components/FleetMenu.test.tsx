@@ -93,6 +93,12 @@ describe("FleetMenu", () => {
     const firstApp = screen.getAllByRole("link").find((l) => l.classList.contains("fleet-app"))!;
     expect(last.compareDocumentPosition(firstApp) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
+  it("settingsLabel renames the Settings row and keeps its href", () => {
+    render(<FleetMenu {...base} settingsLabel="People & invites" user={{ email: "e@x.co" }} />);
+    fireEvent.click(screen.getByRole("button", { name: /apps and account/i }));
+    expect(rowTexts()).toEqual(["People & invites", "Sign out"]);
+    expect(screen.getByRole("link", { name: "People & invites" }).getAttribute("href")).toBe("/settings");
+  });
   it("signed out: rows are Stats then Sign in", () => {
     render(<FleetMenu {...base} statsHref="/stats" user={null} />);
     fireEvent.click(screen.getByRole("button", { name: /apps and sign in/i }));
