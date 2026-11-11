@@ -5,7 +5,7 @@ export function FleetFooter() {
   const year = new Date().getFullYear();
   return (
     <footer className="fleet-footer">
-      <a href="https://crystalprism.io">© 2017–{year} Crystal Prism</a>
+      <a href="https://crystalprism.io">© {year} Crystal Prism</a>
     </footer>
   );
 }
